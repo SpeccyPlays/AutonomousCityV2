@@ -19,6 +19,7 @@
           "C:/src/imgui-1.91.1/imgui_demo.cpp",
           "C:/src/imgui-sfml-3.0/imgui-SFML.cpp",
           "src/nfd_win.cpp",
+          "src/mainMenu.cpp",
           "-LC:/src/SFML-3.0.0-windows-gcc-14.2.0-mingw-64-bit/SFML-3.0.0/lib",
           "-IC:/src/imgui-sfml-3.0",
           "-lsfml-graphics",
