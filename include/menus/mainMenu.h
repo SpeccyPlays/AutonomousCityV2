@@ -12,7 +12,9 @@ namespace AutoCity {
         
         private:
             sf::RenderWindow& window;
-
+            void showMainMenu();
+            void showFileOptions();
+            void showToolsOptions();
         public:
             MainMenu(sf::RenderWindow& renderWindow);
             int init();
