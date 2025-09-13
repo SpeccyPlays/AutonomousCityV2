@@ -2,4 +2,4 @@
 *.dll
 *.exe
 /data/city.json
-lmgui.ini
+*.ini
