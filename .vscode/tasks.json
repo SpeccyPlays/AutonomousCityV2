@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "C:/src/winlibs-x86_64-posix-seh-gcc-14.2.0-mingw-w64ucrt-12.0.0-r2/mingw64/bin/g++",  
+        "args": [
+          "-g",
+          "-Iinclude",
+          "-IC:/src/SFML-3.0.0-windows-gcc-14.2.0-mingw-64-bit/SFML-3.0.0/include",
+          "src/nfd_win.cpp",
+          "-LC:/src/SFML-3.0.0-windows-gcc-14.2.0-mingw-64-bit/SFML-3.0.0/lib",
+          "-lsfml-graphics",
+          "-lsfml-window",
+          "-lsfml-system",
+          //used for nfdextended
+          "-lole32",
+          "-luuid",
+          "-o",
+          "AutonomousCityV2.exe"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      }
+    ],
+    "options": {
+  "env": {
+    "PATH": "C:\\src\\winlibs-x86_64-posix-seh-gcc-14.2.0-mingw-w64ucrt-12.0.0-r2\\mingw64\\bin;${env:PATH}"
+  }
+}
+
+  }
+  
+  
