@@ -25,7 +25,7 @@ int main() {
             };
         };
         ImGui::SFML::Update(window, deltaClock.restart());
-        mainMenu.update();
+        mainMenu.update(deltaClock.restart());
         window.clear();
         ImGui::SFML::Render(window);
         window.display();

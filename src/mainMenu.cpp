@@ -2,14 +2,17 @@
 
 namespace AutoCity {
 
-    MainMenu::MainMenu(sf::RenderWindow& renderWindow) : window(renderWindow) {
+    MainMenu::MainMenu(sf::RenderWindow& renderWindow) : CityObject(renderWindow) {
             
     };
     void MainMenu::processEvents(const sf::Event& event){
         ImGui::SFML::ProcessEvent(window, event);
     };
-    void MainMenu::update() {
+    void MainMenu::update(sf::Time delta) {
         showMainMenu();
+    };
+    void MainMenu::draw(){
+
     };
     void MainMenu::showMainMenu(){
         if (ImGui::BeginMainMenuBar()){
