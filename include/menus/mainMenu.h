@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../include/menus/menu.h"
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/System/Clock.hpp>
@@ -8,7 +8,7 @@
 
 namespace AutoCity {
     
-    class MainMenu {
+    class MainMenu : public Menu {
         
         private:
             sf::RenderWindow& window;
@@ -17,9 +17,7 @@ namespace AutoCity {
             void showToolsOptions();
         public:
             MainMenu(sf::RenderWindow& renderWindow);
-            int init();
-            void processEvents(const sf::Event& event);
-            void update(sf::Time deltaClock);
-            void draw();
+            void processEvents(const sf::Event& event) override;
+            void update() override;
     };   
 };

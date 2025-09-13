@@ -11,21 +11,23 @@ int main() {
     sf::Vector2u screenSize = sf::VideoMode::getDesktopMode().size;
     sf::RenderWindow window(sf::VideoMode(screenSize), "Autononmous City V2");
     window.setFramerateLimit(60);
+    if (!ImGui::SFML::Init(window)) {
+        return 1;
+    };
     AutoCity::MainMenu mainMenu(window);
-    mainMenu.init();
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
-            mainMenu.processEvents(*event);
-
+            ImGui::SFML::ProcessEvent(window, *event);
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             };
         };
-        mainMenu.update(deltaClock.restart());
+        ImGui::SFML::Update(window, deltaClock.restart());
+        mainMenu.update();
         window.clear();
-        mainMenu.draw();
+        ImGui::SFML::Render(window);
         window.display();
     };
 
