@@ -2,8 +2,10 @@
 
 namespace AutoCity {
 
-    MainMenu::MainMenu(sf::RenderWindow& renderWindow) : CityObject(renderWindow) {
+    MainMenu::MainMenu(sf::RenderWindow& renderWindow, EventBus& eventBus) : CityObject(renderWindow, eventBus) {
             
+    };
+    void MainMenu::init(){
     };
     void MainMenu::processEvents(const sf::Event& event){
         ImGui::SFML::ProcessEvent(window, event);
@@ -29,10 +31,18 @@ namespace AutoCity {
     };
     void MainMenu::showFileOptions(){
         ImGui::MenuItem("(Main menu)", NULL, false, false);
-        if (ImGui::MenuItem("New")) {};
-        if (ImGui::MenuItem("Open", "Ctrl+O")) {};
-        if (ImGui::MenuItem("Save", "Ctrl+S")) {};
-        if (ImGui::MenuItem("Save As..")) {};
+        if (ImGui::MenuItem("New")) {
+            bus.publish(EventType::New);
+        };
+        if (ImGui::MenuItem("Open", "Ctrl+O")) {
+
+        };
+        if (ImGui::MenuItem("Save", "Ctrl+S")) {
+            bus.publish(EventType::Save);
+        };
+        if (ImGui::MenuItem("Save As..")) {
+            bus.publish(EventType::SaveAs);
+        };
         ImGui::Separator();
         if (ImGui::MenuItem("Quit", "Alt+F4")) {
             window.close();
@@ -40,6 +50,8 @@ namespace AutoCity {
     };
     void MainMenu::showToolsOptions(){
         ImGui::MenuItem("(Tools menu)", NULL, false, false);
-        if (ImGui::MenuItem("Debug")) {};
+        if (ImGui::MenuItem("Debug")) {
+            bus.publish(EventType::Debug);
+        };
     };
 };

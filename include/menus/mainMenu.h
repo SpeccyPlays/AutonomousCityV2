@@ -1,5 +1,6 @@
 #pragma once
 #include "../include/CityObject.h"
+#include "../EventBus.h"
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/System/Clock.hpp>
@@ -15,7 +16,8 @@ namespace AutoCity {
             void showFileOptions();
             void showToolsOptions();
         public:
-            MainMenu(sf::RenderWindow& renderWindow);
+            MainMenu(sf::RenderWindow& renderWindow, EventBus& eventBus);
+            void init() override;
             void processEvents(const sf::Event& event) override;
             void update(sf::Time delta) override;
             void draw() override;

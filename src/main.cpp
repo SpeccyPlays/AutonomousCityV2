@@ -14,7 +14,8 @@ int main() {
     if (!ImGui::SFML::Init(window)) {
         return 1;
     };
-    AutoCity::MainMenu mainMenu(window);
+    AutoCity::EventBus cityEvents;
+    AutoCity::MainMenu mainMenu(window, cityEvents);
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
