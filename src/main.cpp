@@ -1,6 +1,6 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include "../include/menus/mainMenu.h"
+#include "CityObjectController.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
@@ -15,7 +15,7 @@ int main() {
         return 1;
     };
     AutoCity::EventBus cityEvents;
-    AutoCity::MainMenu mainMenu(window, cityEvents);
+    AutoCity::CityObjectController cityController(window, cityEvents);
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
@@ -26,9 +26,10 @@ int main() {
             };
         };
         ImGui::SFML::Update(window, deltaClock.restart());
-        mainMenu.update(deltaClock.restart());
+        cityController.update(deltaClock.restart());
         window.clear();
         ImGui::SFML::Render(window);
+        cityController.draw();
         window.display();
     };
 
