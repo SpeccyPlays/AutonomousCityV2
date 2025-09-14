@@ -1,6 +1,7 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include "../include/controllers/CityObjectController.h"
+#include "../include/textures/TextureManager.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
@@ -14,6 +15,7 @@ int main() {
     if (!ImGui::SFML::Init(window)) {
         return 1;
     };
+    AutoCity::TextureManager texManager;
     AutoCity::EventBus cityEvents;
     AutoCity::CityObjectController cityController(window, cityEvents);
 
