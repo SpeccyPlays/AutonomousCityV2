@@ -2,6 +2,7 @@
 #include <imgui-SFML.h>
 #include "../include/controllers/CityObjectController.h"
 #include "../include/textures/TextureManager.h"
+#include "../include/CityGrid/TileManager.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
@@ -16,6 +17,7 @@ int main() {
         return 1;
     };
     AutoCity::TextureManager texManager;
+    AutoCity::TileManager tileManager;
     AutoCity::EventBus cityEvents;
     AutoCity::CityObjectController cityController(window, cityEvents);
 
