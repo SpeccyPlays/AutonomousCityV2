@@ -2,7 +2,7 @@
 
 #include <list>
 #include <memory>
-#include "CityObject.h"
+#include "../include/objects/CityObject.h"
 
 namespace AutoCity {
     class CityObjectController : public CityObject{

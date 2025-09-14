@@ -1,6 +1,6 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include "CityObjectController.h"
+#include "../include/controllers/CityObjectController.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>

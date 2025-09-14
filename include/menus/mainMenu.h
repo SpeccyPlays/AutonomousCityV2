@@ -1,5 +1,5 @@
 #pragma once
-#include "../include/CityObject.h"
+#include "../include/objects/CityObject.h"
 #include "../EventBus.h"
 #include <imgui.h>
 #include <imgui-SFML.h>

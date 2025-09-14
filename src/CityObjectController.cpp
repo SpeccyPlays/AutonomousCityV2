@@ -1,4 +1,4 @@
-#include "CityObjectController.h"
+#include "../include/controllers/CityObjectController.h"
 #include "../include/menus/MainMenu.h"
 
 namespace AutoCity {
