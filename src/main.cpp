@@ -17,8 +17,11 @@ int main() {
         return 1;
     };
     AutoCity::TextureManager texManager;
-    AutoCity::TileManager tileManager;
     AutoCity::EventBus cityEvents;
+    AutoCity::TileManager tileManager;
+    const std::string roadTexures= "include/textures/RoadTextures.png";
+    tileManager.setEventBus(cityEvents);
+    tileManager.setBasicTiles(texManager.getTexture(roadTexures));
     AutoCity::CityObjectController cityController(window, cityEvents);
 
     sf::Clock deltaClock;

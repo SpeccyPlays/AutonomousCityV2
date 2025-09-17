@@ -1,14 +1,17 @@
 #pragma once
 #include "../include/CityGrid/Tile.h"
+#include "../include/EventBus.h"
 #include <map>
 
 namespace AutoCity {
     class TileManager {
         private:
             static std::map<TileType, std::map<TileSubType, Tile>> tiles;
-            static sf::Texture* tileSheet;
+            static EventBus* eventBus;
         public:
-            static void setTileSheet(sf::Texture* texture);
+            static void setEventBus(EventBus& bus);
+            static void setBasicTiles(sf::Texture texture);
             static Tile getTile(TileType type, TileSubType subType);
+            static std::map<TileType, std::map<TileSubType, Tile>> getTiles();
     };
 };

@@ -5,6 +5,7 @@
 namespace AutoCity {
     
     enum class TileType {
+        Default,//will be created in the tilemanager
         Road,
         Pavement,
         Grass,
@@ -21,7 +22,7 @@ namespace AutoCity {
     struct Tile {
         TileType type;
         TileSubType subType;
-        sf::IntRect spriteSheetPos;
+        sf::Sprite sprite;
         std::vector<sf::Angle> flowMap;
         sf::Angle rotation;
     };
