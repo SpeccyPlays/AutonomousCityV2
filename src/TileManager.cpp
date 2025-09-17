@@ -37,7 +37,7 @@ namespace AutoCity {
             {north, south, south, north}, //flowmap
             sf::degrees(0)
         };
-        tiles[TileType::Road][TileSubType::Straight] = roadStraight;
+        tiles[TileType::Road].emplace(TileSubType::Straight, roadStraight); //add like this or it goes boom
 
         sf::Sprite leftTurnSprite(texture, sf::IntRect({tileSize, 0}, {tileSize, tileSize}));
         Tile leftTurn = {
@@ -47,7 +47,7 @@ namespace AutoCity {
             {east, south, south, west}, //flowmap
             sf::degrees(0)
         };
-        tiles[TileType::Road][TileSubType::LeftTurn] = leftTurn;
+        tiles[TileType::Road].emplace(TileSubType::LeftTurn, leftTurn);
 
         sf::Sprite rightTurnSprite(texture, sf::IntRect({tileSize * 2, 0}, {tileSize, tileSize}));
         Tile rightTurn = {
@@ -57,7 +57,7 @@ namespace AutoCity {
             {east, east, south, north}, //flowmap
             sf::degrees(0)
         };
-        tiles[TileType::Road][TileSubType::RightTurn] = rightTurn;
+        tiles[TileType::Road].emplace(TileSubType::RightTurn, rightTurn);
 
         sf::Sprite tJuncSprite(texture, sf::IntRect({tileSize * 3, 0}, {tileSize, tileSize}));
         Tile tJunction = {
@@ -67,7 +67,7 @@ namespace AutoCity {
             {east, east, south, north}, //flowmap
             sf::degrees(0)
         };
-        tiles[TileType::Road][TileSubType::TJunction] = tJunction;
+        tiles[TileType::Road].emplace(TileSubType::TJunction, tJunction);
 
         sf::Sprite deadEndSprite(texture, sf::IntRect({tileSize * 4, 0}, {tileSize, tileSize}));
         Tile deadEnd = {
@@ -77,7 +77,7 @@ namespace AutoCity {
             {east, east, south, north}, //flowmap
             sf::degrees(0)
         };
-        tiles[TileType::Road][TileSubType::DeadEnd] = deadEnd;
+        tiles[TileType::Road].emplace(TileSubType::DeadEnd, deadEnd);
         eventBus->publish(AutoCity::EventType::TilesLoaded);
     };
 
@@ -107,7 +107,7 @@ namespace AutoCity {
         sf::Sprite sprite(texture);
         sf::Angle angle = sf::degrees(0);
         Tile defaultTile = {TileType::Default, TileSubType::NoFlow, sprite, {angle, angle, angle, angle}, angle};
-        tiles[TileType::Default][TileSubType::NoFlow] = defaultTile;
+        tiles[TileType::Default].emplace(TileSubType::NoFlow, defaultTile);
         return defaultTile;
     };
 
