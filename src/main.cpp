@@ -1,5 +1,6 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include "../include/CityGrid/Tile.h"
 #include "../include/controllers/CityObjectController.h"
 #include "../include/textures/TextureManager.h"
 #include "../include/CityGrid/TileManager.h"
@@ -19,10 +20,12 @@ int main() {
     AutoCity::TextureManager texManager;
     AutoCity::EventBus cityEvents;
     AutoCity::TileManager tileManager;
-    const std::string roadTexures= "include/textures/RoadTextures.png";
+    const std::string roadTexures= "include/textures/RoadsTextures.png";
     tileManager.setEventBus(cityEvents);
     tileManager.setBasicTiles(texManager.getTexture(roadTexures));
     AutoCity::CityObjectController cityController(window, cityEvents);
+
+    const auto& tiles = tileManager.getTiles();
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
@@ -37,6 +40,17 @@ int main() {
         window.clear();
         ImGui::SFML::Render(window);
         cityController.draw();
+        float yPos = 0.f;
+        for (auto& subTiles : tiles){
+            auto& subMap = subTiles.second;
+            for (auto subPair : subMap){
+                AutoCity::Tile tile = subPair.second;
+                sf::Sprite& sprite = tile.sprite;
+                sprite.setPosition({0, yPos});
+                window.draw(sprite);
+                yPos += 32.f;
+            };
+        };
         window.display();
     };
 

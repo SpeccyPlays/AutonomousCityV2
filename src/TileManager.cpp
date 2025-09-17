@@ -9,7 +9,7 @@ namespace AutoCity {
         eventBus = &bus;
     }
 
-    void TileManager::setBasicTiles(sf::Texture texture){
+    void TileManager::setBasicTiles(sf::Texture& tex){
         /*
         Straight,
         LeftTurn,
@@ -17,6 +17,7 @@ namespace AutoCity {
         DeadEnd,
         TJunction
         */
+        sf::Texture& texture = tex;
         sf::Angle north = sf::degrees(270);
         sf::Angle south = sf::degrees(90);
         sf::Angle east = sf::degrees(0);
@@ -111,7 +112,7 @@ namespace AutoCity {
         return defaultTile;
     };
 
-    std::map<TileType, std::map<TileSubType, Tile>> TileManager::getTiles(){
+    std::map<TileType, std::map<TileSubType, Tile>>& TileManager::getTiles(){
         return tiles;
     }
 };

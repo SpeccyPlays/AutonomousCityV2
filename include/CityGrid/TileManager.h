@@ -10,8 +10,8 @@ namespace AutoCity {
             static EventBus* eventBus;
         public:
             static void setEventBus(EventBus& bus);
-            static void setBasicTiles(sf::Texture texture);
+            static void setBasicTiles(sf::Texture& tex);
             static Tile getTile(TileType type, TileSubType subType);
-            static std::map<TileType, std::map<TileSubType, Tile>> getTiles();
+            static std::map<TileType, std::map<TileSubType, Tile>>& getTiles();
     };
 };
