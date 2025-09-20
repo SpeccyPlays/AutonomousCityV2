@@ -10,23 +10,12 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::TilesLoaded, [this](const Event& e) { loadTiles(e); });
     };
     void TileMenu::processEvents(const sf::Event& event){
-        ImGui::SFML::ProcessEvent(window, event);
     };
     void TileMenu::update(sf::Time delta){
                 
     };
     void TileMenu::draw(){
-        if (allTiles.size() > 0){
-            float yPos = 32.f;
-            float xPos = 32.f;
-            for (auto& tile : allTiles){
-                tile.sprite.setPosition({xPos, yPos});
-                window.draw(tile.sprite);
-                xPos += 32.f;
-                //yPos += 32.f;
-                std::cout << "Adding TileType: " << static_cast<int>(tile.type) <<  "Adding tile subtype: " << static_cast<int>(tile.subType) << std::endl;
-            };
-        }
+
     };
     void TileMenu::loadTiles(const Event& e){
         const auto& ev = std::any_cast<std::map<TileType, std::map<TileSubType, Tile>>>(e.payload);

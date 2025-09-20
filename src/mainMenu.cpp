@@ -8,7 +8,6 @@ namespace AutoCity {
     void MainMenu::init(){
     };
     void MainMenu::processEvents(const sf::Event& event){
-        ImGui::SFML::ProcessEvent(window, event);
     };
     void MainMenu::update(sf::Time delta) {
         showMainMenu();
