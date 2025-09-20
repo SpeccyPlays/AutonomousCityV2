@@ -1,10 +1,12 @@
 #include "../include/controllers/CityObjectController.h"
 #include "../include/menus/MainMenu.h"
+#include "../include/menus/TileMenu.h"
 
 namespace AutoCity {
 
     CityObjectController::CityObjectController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
         objects.push_back(std::make_unique<MainMenu>(window, bus));
+        objects.push_back(std::make_unique<TileMenu>(window, bus));
     };
     void CityObjectController::init(){
         for (auto& object : objects){

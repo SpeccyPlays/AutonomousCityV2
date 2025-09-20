@@ -12,7 +12,10 @@ namespace AutoCity {
         SaveAs,
         Quit,
         Debug,
-        TilesLoaded
+        TilesLoaded,
+        TileSelected,
+        TileAdded,
+        Error
     };
     struct Event {
         EventType type;

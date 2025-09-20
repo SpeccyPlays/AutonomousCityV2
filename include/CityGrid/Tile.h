@@ -23,6 +23,7 @@ namespace AutoCity {
         TileType type;
         TileSubType subType;
         sf::Sprite sprite;
+        sf::Vector2f origin;
         std::vector<sf::Angle> flowMap;
         sf::Angle rotation;
     };

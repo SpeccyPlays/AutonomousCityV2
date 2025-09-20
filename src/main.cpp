@@ -21,9 +21,10 @@ int main() {
     AutoCity::EventBus cityEvents;
     AutoCity::TileManager tileManager;
     const std::string roadTexures= "include/textures/RoadsTextures.png";
+    AutoCity::CityObjectController cityController(window, cityEvents);
+    cityController.init();
     tileManager.setEventBus(cityEvents);
     tileManager.setBasicTiles(texManager.getTexture(roadTexures));
-    AutoCity::CityObjectController cityController(window, cityEvents);
 
     const auto& tiles = tileManager.getTiles();
 
@@ -40,7 +41,7 @@ int main() {
         window.clear();
         ImGui::SFML::Render(window);
         cityController.draw();
-        float yPos = 0.f;
+        /*float yPos = 0.f;
         for (auto& subTiles : tiles){
             auto& subMap = subTiles.second;
             for (auto subPair : subMap){
@@ -50,7 +51,7 @@ int main() {
                 window.draw(sprite);
                 yPos += 32.f;
             };
-        };
+        };*/
         window.display();
     };
 
