@@ -1,5 +1,6 @@
 #include "../include/menus/TileMenu.h"
 #include <iostream>
+#include <cmath>
 
 namespace AutoCity {
 
@@ -47,6 +48,7 @@ namespace AutoCity {
                     //do this so the origin is centre of the tile and not the top left
                     newTile2.sprite.setOrigin(newTile2.origin);
                     newTile2.sprite.setRotation(newTile2.rotation);
+                    newTile2.flowMap = rotateFlowMap(newTile2.flowMap, angle);
                     allTiles.emplace_back(newTile2);
                 }
                 else {
@@ -58,10 +60,21 @@ namespace AutoCity {
                         //do this so the origin is centre of the tile and not the top left
                         rotated.sprite.setOrigin(rotated.origin);
                         rotated.sprite.setRotation(rotated.rotation);
+                        rotated.flowMap = rotateFlowMap(rotated.flowMap, angle);
                         allTiles.emplace_back(rotated);
                     };
                 };
             };
         };
+    };
+    std::vector<sf::Angle> TileMenu::rotateFlowMap(std::vector<sf::Angle> map, int angle){
+        std::vector<sf::Angle> newFlowMap = map;
+        for (sf::Angle& flowAngle : newFlowMap){
+            sf::Angle newAngle = flowAngle + sf::degrees(angle);
+            float wrapped = fmod(newAngle.asDegrees(), 360.f); //Wrap into [0, 360)
+            if (wrapped < 0) wrapped += 360.f;
+            flowAngle = sf::degrees(wrapped);
+        }
+        return newFlowMap;
     };
 };

@@ -14,6 +14,7 @@ namespace AutoCity {
         private:
             std::vector<Tile> allTiles;
             void loadTiles(const Event& e);
+            std::vector<sf::Angle> rotateFlowMap(std::vector<sf::Angle> map, int angle);
         public:
             TileMenu(sf::RenderWindow& renderWindow, EventBus& eventBus);
             void init() override;
