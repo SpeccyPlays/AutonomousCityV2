@@ -30,28 +30,18 @@ int main() {
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
-        while (const auto event = window.pollEvent()) {
+        while (const std::optional event = window.pollEvent()) {
             ImGui::SFML::ProcessEvent(window, *event);
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             };
+            cityController.processEvents(*event);
         };
         ImGui::SFML::Update(window, deltaClock.restart());
         cityController.update(deltaClock.restart());
         window.clear();
         ImGui::SFML::Render(window);
         cityController.draw();
-        /*float yPos = 0.f;
-        for (auto& subTiles : tiles){
-            auto& subMap = subTiles.second;
-            for (auto subPair : subMap){
-                AutoCity::Tile tile = subPair.second;
-                sf::Sprite& sprite = tile.sprite;
-                sprite.setPosition({0, yPos});
-                window.draw(sprite);
-                yPos += 32.f;
-            };
-        };*/
         window.display();
     };
 

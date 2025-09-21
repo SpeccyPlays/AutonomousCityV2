@@ -13,10 +13,39 @@ namespace AutoCity {
     void TileMenu::processEvents(const sf::Event& event){
     };
     void TileMenu::update(sf::Time delta){
-                
+        showTileMenu();
     };
     void TileMenu::draw(){
-
+        //ImGui doesn't handle sprite rotation so we're going to have to fudge adding sprites
+        //just a plus button in the draw menu with sfml manually drawing the tile sprite next to it in this function
+        if (allTiles.size() > 0){
+            float tileX = window.getSize().x - 32.f;
+            float tileY = 0 + 43.f; //
+            for (auto& tile : allTiles){
+                tile.sprite.setPosition({tileX, tileY});
+                window.draw(tile.sprite);
+                tileY += 36.f;
+            };
+        };
+    };
+    void TileMenu::showTileMenu(){
+        if (allTiles.size() > 0){
+            //Make sure menu is fixed size and stays to the right
+            ImGui::SetNextWindowSize(ImVec2(64, window.getSize().y));
+            ImGui::SetNextWindowPos(ImVec2(window.getSize().x - 96, 0));     
+            ImGui::Begin("Tiles:", nullptr,
+                        ImGuiWindowFlags_NoResize |
+                        ImGuiWindowFlags_NoCollapse |
+                        ImGuiWindowFlags_NoMove);
+            for (auto& tile : allTiles){
+                std::string id = std::string("Add-") + "##" + tile.toString();
+                if (ImGui::Button(id.c_str(), {32, 32})) {
+                    Event event = {EventType::TileSelected, &tile};
+                    bus.publish(event);
+                };
+            };
+            ImGui::End();
+        };
     };
     void TileMenu::loadTiles(const Event& e){
         const auto& ev = std::any_cast<std::map<TileType, std::map<TileSubType, Tile>>>(e.payload);
