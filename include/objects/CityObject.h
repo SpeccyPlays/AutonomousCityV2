@@ -9,6 +9,8 @@ namespace AutoCity {
         protected:
                 sf::RenderWindow& window;
                 EventBus& bus;
+        private:
+            bool debug = false;
         public:
             CityObject(sf::RenderWindow& win, EventBus& eventBus) : window(win), bus(eventBus) {};
             virtual ~CityObject() = default;
@@ -16,5 +18,8 @@ namespace AutoCity {
             virtual void processEvents(const sf::Event& event) = 0;
             virtual void update(sf::Time delta) = 0;
             virtual void draw() = 0;
+            void toggleDebug(){
+                debug = !debug;
+            };
     };
 };
