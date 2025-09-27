@@ -1,6 +1,7 @@
 #pragma once
 #include "../include/objects/CityObject.h"
 #include "../include/CityGrid/Tile.h"
+#include "../include/CityGrid/TileManager.h"
 #include "../EventBus.h"
 #include <imgui.h>
 #include <imgui-SFML.h>

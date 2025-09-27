@@ -7,8 +7,9 @@ namespace AutoCity {
     class TileManager {
         private:
             static std::map<TileType, std::map<TileSubType, Tile>> tiles;
-            static EventBus* eventBus;
+            static EventBus* eventBus; 
         public:
+            static sf::Vector2i tileSize;
             static void setEventBus(EventBus& bus);
             static void setBasicTiles(sf::Texture& tex);
             static Tile getTile(TileType type, TileSubType subType);

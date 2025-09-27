@@ -8,6 +8,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
+#include <iostream>
+#include <cmath>
 
 int main() {
     //It's gonna be as big as we can
@@ -26,8 +28,11 @@ int main() {
     tileManager.setEventBus(cityEvents);
     tileManager.setBasicTiles(texManager.getTexture(roadTexures));
 
-    const auto& tiles = tileManager.getTiles();
-
+    sf::Vector2u windowSize = window.getSize();
+    sf::Vector2i gridStart = AutoCity::TileManager::tileSize;
+    sf::Vector2i gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - AutoCity::TileManager::tileSize.y)};
+    sf::Vector2i gridSize = {(gridEnd.x - gridStart.x) / AutoCity::TileManager::tileSize.x, (gridEnd.y - gridStart.y) / AutoCity::TileManager::tileSize.y};
+    std::cout << "Grid X: " << gridSize.x << " Grid Y: " << gridSize.y << std::endl;
     sf::Clock deltaClock;
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
@@ -42,6 +47,22 @@ int main() {
         window.clear();
         ImGui::SFML::Render(window);
         cityController.draw();
+        for (auto col = 0; col <= gridSize.x; col++){
+            std::array line =
+                {
+                    sf::Vertex{sf::Vector2f(col * AutoCity::TileManager::tileSize.x, gridStart.y)},
+                    sf::Vertex{sf::Vector2f(col * AutoCity::TileManager::tileSize.x, gridSize.y * AutoCity::TileManager::tileSize.y)}
+                };
+            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        }
+        for (auto rowCount = 0; rowCount <= gridSize.y; rowCount++){
+            std::array line =
+                {
+                    sf::Vertex{sf::Vector2f(gridStart.x, rowCount * AutoCity::TileManager::tileSize.y)},
+                    sf::Vertex{sf::Vector2f(gridSize.x * AutoCity::TileManager::tileSize.x, rowCount * AutoCity::TileManager::tileSize.y)}
+                };
+            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        }
         window.display();
     };
 

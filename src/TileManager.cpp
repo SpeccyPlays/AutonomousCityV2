@@ -4,19 +4,19 @@ namespace AutoCity {
     
     std::map<TileType, std::map<TileSubType, Tile>> TileManager::tiles;
     EventBus* TileManager::eventBus = nullptr;
+    sf::Vector2i TileManager::tileSize = {32, 32};
     
     void TileManager::setEventBus(EventBus& bus){
         eventBus = &bus;
     }
-
     void TileManager::setBasicTiles(sf::Texture& tex){
         //create a default tile and add it
-        sf::Vector2u defaultDimensions(32.f, 32.f);
+        sf::Vector2u defaultDimensions(tileSize);
         sf::Texture defaultTexture(defaultDimensions);
         sf::Image image(defaultDimensions, sf::Color::Black);
         defaultTexture.update(image);
         sf::Sprite sprite(defaultTexture);
-        sf::Vector2f origin = {32.f / 2, 32.f / 2};
+        sf::Vector2f origin = {tileSize.x / 2.f, tileSize.y / 2.f};
         sf::Angle angle = sf::degrees(0);
         Tile defaultTile = {TileType::Default, TileSubType::NoFlow, sprite, origin, {angle, angle, angle, angle}, angle};
         tiles[TileType::Default].emplace(TileSubType::NoFlow, defaultTile);
@@ -33,8 +33,7 @@ namespace AutoCity {
             Bottom right is third value
             Bottom left is last value
        */
-        int tileSize = 32;
-        sf::Sprite roadStraightSprite(texture, sf::IntRect({0, 0}, {tileSize, tileSize}));
+        sf::Sprite roadStraightSprite(texture, sf::IntRect({0, 0}, {tileSize.x, tileSize.y}));
         Tile roadStraight = {
             TileType::Road, 
             TileSubType::Straight, 
@@ -45,7 +44,7 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::Straight, roadStraight); //add like this or it goes boom
 
-        sf::Sprite leftTurnSprite(texture, sf::IntRect({tileSize, 0}, {tileSize, tileSize}));
+        sf::Sprite leftTurnSprite(texture, sf::IntRect({tileSize.x, 0}, {tileSize.x, tileSize.y}));
         Tile leftTurn = {
             TileType::Road, 
             TileSubType::LeftTurn, 
@@ -56,7 +55,7 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::LeftTurn, leftTurn);
 
-        sf::Sprite rightTurnSprite(texture, sf::IntRect({tileSize * 2, 0}, {tileSize, tileSize}));
+        sf::Sprite rightTurnSprite(texture, sf::IntRect({tileSize.x * 2, 0}, {tileSize.x, tileSize.y}));
         Tile rightTurn = {
             TileType::Road, 
             TileSubType::RightTurn, 
@@ -67,7 +66,7 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::RightTurn, rightTurn);
 
-        sf::Sprite tJuncSprite(texture, sf::IntRect({tileSize * 3, 0}, {tileSize, tileSize}));
+        sf::Sprite tJuncSprite(texture, sf::IntRect({tileSize.x * 3, 0}, {tileSize.x, tileSize.y}));
         Tile tJunction = {
             TileType::Road, 
             TileSubType::TJunction, 
@@ -78,7 +77,7 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::TJunction, tJunction);
 
-        sf::Sprite deadEndSprite(texture, sf::IntRect({tileSize * 4, 0}, {tileSize, tileSize}));
+        sf::Sprite deadEndSprite(texture, sf::IntRect({tileSize.x * 4, 0}, {tileSize.x, tileSize.y}));
         Tile deadEnd = {
             TileType::Road, 
             TileSubType::DeadEnd, 
@@ -111,12 +110,12 @@ namespace AutoCity {
             }
         }
         //create a default tile and add it - shouldn't get to this but just in case
-        sf::Vector2u defaultDimensions(32.f, 32.f);
+        sf::Vector2u defaultDimensions(tileSize);
         sf::Texture texture(defaultDimensions);
         sf::Image image(defaultDimensions, sf::Color::Black);
         texture.update(image);
         sf::Sprite sprite(texture);
-        sf::Vector2f origin = {32.f / 2, 32.f / 2};
+        sf::Vector2f origin = {tileSize.x / 2.f, tileSize.y / 2.f};
         sf::Angle angle = sf::degrees(0);
         Tile defaultTile = {TileType::Default, TileSubType::NoFlow, sprite, origin, {angle, angle, angle, angle}, angle};
         tiles[TileType::Default].emplace(TileSubType::NoFlow, defaultTile);
