@@ -49,7 +49,6 @@ namespace AutoCity {
         };
     };
     void CityObjectController::updateTileSelected(const Event& e){
-        tileSelected = true;
         auto tilePtr = std::any_cast<AutoCity::Tile*>(e.payload);
         if (tilePtr) {
             selectedTile = std::make_unique<AutoCity::Tile>(*tilePtr);

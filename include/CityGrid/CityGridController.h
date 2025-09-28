@@ -10,9 +10,12 @@ namespace AutoCity {
             sf::Vector2i gridStart;
             sf::Vector2i gridEnd;
             sf::Vector2i gridSize;
+            std::vector<std::vector<Tile>> grid;
             void drawGrid();
+            void drawTiles();
             void addTile(const Event& e);
             bool checkInGrid(sf::Vector2u pos);
+            void addTileToGrid(sf::Vector2u pos, Tile tile);
         public:
             CityGridController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

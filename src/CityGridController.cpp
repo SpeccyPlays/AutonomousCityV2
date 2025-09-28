@@ -1,5 +1,6 @@
 #include "../include/CityGrid/CityGridController.h"
 #include <iostream>
+#include <math.h>
 
 namespace AutoCity {
 
@@ -8,6 +9,8 @@ namespace AutoCity {
         gridStart = AutoCity::TileManager::tileSize;
         gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - AutoCity::TileManager::tileSize.y)};
         gridSize = {(gridEnd.x - gridStart.x) / AutoCity::TileManager::tileSize.x, (gridEnd.y - gridStart.y) / AutoCity::TileManager::tileSize.y};
+        Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
+        grid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
     };
     void CityGridController::init(){
         bus.subscribe(AutoCity::EventType::TileAdded,  [this](const Event& e) { addTile(e); });
@@ -18,6 +21,7 @@ namespace AutoCity {
     };
     void CityGridController::draw(){
         drawGrid();
+        drawTiles();
     };
     void CityGridController::drawGrid(){
         for (int col = 0; col <= gridSize.x; col++) {
@@ -39,20 +43,45 @@ namespace AutoCity {
         }
 
     };
+    void CityGridController::drawTiles(){
+        for (int i = 0; i < grid.size(); i++){
+            for (int j = 0; j < grid[i].size(); j++){
+                Tile tile = grid[i][j];
+                if (tile.type != TileType::Default){
+                    sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
+                    tile.sprite.setPosition(drawPos);
+                    window.draw(tile.sprite);
+                };
+            };
+        };
+    };
     void CityGridController::addTile(const Event& e){
-        const auto& [tile, tilePos] = std::any_cast<std::pair<Tile, sf::Vector2u>>(e.payload);
-        if (!checkInGrid(tilePos)){
+        auto placementInfo = std::any_cast<std::pair<Tile, sf::Vector2u>>(e.payload);
+        Tile tile = placementInfo.first;
+        sf::Vector2u tilePos = placementInfo.second;
+        //do this or it looks off by one tile later
+        sf::Vector2u snappedPos = {
+            gridStart.x + ((tilePos.x - gridStart.x + TileManager::tileSize.x / 2) / TileManager::tileSize.x) * TileManager::tileSize.x,
+            gridStart.y + ((tilePos.y - gridStart.y + TileManager::tileSize.y / 2) / TileManager::tileSize.y) * TileManager::tileSize.y
+        };
+        if (!checkInGrid(snappedPos)){
             std::cout << "Tile out of bounds" << std::endl;
         }
         else {
-            std::cout << "Tile placed at:" << std::endl;
-            std::cout << "X: " << tilePos.x << " Y: " << tilePos.y << std::endl;
-        }
+            addTileToGrid(snappedPos, tile);
+        };
     };
     bool CityGridController::checkInGrid(sf::Vector2u pos){
         if (pos.x < gridStart.x || pos.y < gridStart.y || pos.x >= gridEnd.x || pos.y >= gridEnd.y){
             return false;
-        }
+        };
         return true;
+    };
+    void CityGridController::addTileToGrid(sf::Vector2u pos, Tile tile){
+        sf::Vector2u gridPos = {(pos.x - gridStart.x) / TileManager::tileSize.x, (pos.y - gridStart.y) / TileManager::tileSize.y};
+        if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
+            tile.sprite.setOrigin({0, 0});
+            grid[gridPos.y][gridPos.x] = tile;
+        };
     };
 };
