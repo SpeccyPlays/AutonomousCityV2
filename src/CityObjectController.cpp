@@ -1,11 +1,10 @@
 #include "../include/controllers/CityObjectController.h"
-#include "../include/menus/MainMenu.h"
-#include "../include/menus/TileMenu.h"
 #include <iostream>
 
 namespace AutoCity {
 
     CityObjectController::CityObjectController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
+        objects.push_back(std::make_unique<CityGridController>(window, bus));
         objects.push_back(std::make_unique<MainMenu>(window, bus));
         objects.push_back(std::make_unique<TileMenu>(window, bus));
     };
@@ -25,11 +24,10 @@ namespace AutoCity {
                 deselectTile();
             }
             else if (mouseEvent->button == sf::Mouse::Button::Left && tileSelected && selectedTile != nullptr){
-                std::vector<std::pair<Tile, sf::Vector2u>> tileInfo;
                 //do this to make a new tile from the pointer
                 Tile* tilePtr = selectedTile.get();
-                Tile newTile = *tilePtr; 
-                tileInfo.emplace_back(newTile, mouseEvent->position); 
+                Tile newTile = *tilePtr;
+                std::pair<Tile, sf::Vector2u> tileInfo(newTile, mouseEvent->position);
                 Event event = {EventType::TileAdded, tileInfo};
                 bus.publish(event);
             };

@@ -3,6 +3,9 @@
 #include <list>
 #include <memory>
 #include "../include/objects/CityObject.h"
+#include "../include/menus/MainMenu.h"
+#include "../include/menus/TileMenu.h"
+#include "../include/CityGrid/CityGridController.h"
 #include "../include/CityGrid/Tile.h"
 
 namespace AutoCity {
