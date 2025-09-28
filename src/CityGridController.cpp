@@ -69,17 +69,11 @@ namespace AutoCity {
         auto placementInfo = std::any_cast<std::pair<Tile, sf::Vector2u>>(e.payload);
         Tile tile = placementInfo.first;
         sf::Vector2u tilePos = placementInfo.second;
-        //do this or it looks off by one tile later
-
-        sf::Vector2u snappedPos = {
-            tilePos.x,
-            tilePos.y
-        };
-        if (!checkInGrid(snappedPos)){
+        if (!checkInGrid(tilePos)){
             std::cout << "Tile out of bounds" << std::endl;
         }
         else {
-            addTileToGrid(snappedPos, tile);
+            addTileToGrid(tilePos, tile);
         };
     };
     bool CityGridController::checkInGrid(sf::Vector2u pos){
@@ -89,10 +83,16 @@ namespace AutoCity {
         return true;
     };
     void CityGridController::addTileToGrid(sf::Vector2u pos, Tile tile){
-        sf::Vector2u gridPos = {(pos.x - gridStart.x + (TileManager::tileSize.x / 2) ) / TileManager::tileSize.x, (pos.y - gridStart.y + (TileManager::tileSize.y / 2)) / TileManager::tileSize.y};
+        //do this or it looks off by one tile later
+        sf::Vector2u gridPos = pixelToGridPos(pos);
         if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
             tile.sprite.setOrigin({0, 0});
             grid[gridPos.y][gridPos.x] = tile;
         };
+    };
+    sf::Vector2u CityGridController::pixelToGridPos(sf::Vector2u pos){
+        sf::Vector2u gridPos = {static_cast<unsigned int>(std::round((pos.x - gridStart.x) / float(TileManager::tileSize.x))), 
+            static_cast<unsigned int>(std::round((pos.y - gridStart.y) / float(TileManager::tileSize.y)))};
+        return gridPos;
     };
 };
