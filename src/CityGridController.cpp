@@ -6,18 +6,28 @@ namespace AutoCity {
 
     CityGridController::CityGridController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus) {
         sf::Vector2u windowSize = window.getSize();
-        gridStart = AutoCity::TileManager::tileSize;
+        gridStart = {0, AutoCity::TileManager::tileSize.y};
         gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - AutoCity::TileManager::tileSize.y)};
         gridSize = {(gridEnd.x - gridStart.x) / AutoCity::TileManager::tileSize.x, (gridEnd.y - gridStart.y) / AutoCity::TileManager::tileSize.y};
-        Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
-        grid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
+        newGrid();
     };
     void CityGridController::init(){
-        bus.subscribe(AutoCity::EventType::TileAdded,  [this](const Event& e) { addTile(e); });
+        bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
+        bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
     };
     void CityGridController::processEvents(const sf::Event& event){
     };
     void CityGridController::update(sf::Time delta) {
+    };
+    void CityGridController::newGrid(){
+        Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
+        grid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
+    };
+    void CityGridController::newGrid(const Event& e){
+        Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
+        std::vector<std::vector<Tile>> newGrid;
+        newGrid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
+        grid = newGrid;
     };
     void CityGridController::draw(){
         drawGrid();
@@ -33,7 +43,7 @@ namespace AutoCity {
             window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
         }
 
-        for (int row = 0; row <= gridSize.y; row++) {
+        for (int row = 0; row < gridSize.y; row++) {
             int y = gridStart.y + row * AutoCity::TileManager::tileSize.y;
             std::array line = {
                 sf::Vertex{sf::Vector2f(gridStart.x, y)},
@@ -60,9 +70,10 @@ namespace AutoCity {
         Tile tile = placementInfo.first;
         sf::Vector2u tilePos = placementInfo.second;
         //do this or it looks off by one tile later
+
         sf::Vector2u snappedPos = {
-            gridStart.x + ((tilePos.x - gridStart.x + TileManager::tileSize.x / 2) / TileManager::tileSize.x) * TileManager::tileSize.x,
-            gridStart.y + ((tilePos.y - gridStart.y + TileManager::tileSize.y / 2) / TileManager::tileSize.y) * TileManager::tileSize.y
+            tilePos.x,
+            tilePos.y
         };
         if (!checkInGrid(snappedPos)){
             std::cout << "Tile out of bounds" << std::endl;
@@ -78,7 +89,7 @@ namespace AutoCity {
         return true;
     };
     void CityGridController::addTileToGrid(sf::Vector2u pos, Tile tile){
-        sf::Vector2u gridPos = {(pos.x - gridStart.x) / TileManager::tileSize.x, (pos.y - gridStart.y) / TileManager::tileSize.y};
+        sf::Vector2u gridPos = {(pos.x - gridStart.x + (TileManager::tileSize.x / 2) ) / TileManager::tileSize.x, (pos.y - gridStart.y + (TileManager::tileSize.y / 2)) / TileManager::tileSize.y};
         if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
             tile.sprite.setOrigin({0, 0});
             grid[gridPos.y][gridPos.x] = tile;
