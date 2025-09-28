@@ -29,6 +29,13 @@ int main() {
     tileManager.setBasicTiles(texManager.getTexture(roadTexures));
 
     sf::Clock deltaClock;
+    //set all menu backgrounds so not blended
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.0f);
+    style.Colors[ImGuiCol_ChildBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
+
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
             ImGui::SFML::ProcessEvent(window, *event);
@@ -40,8 +47,8 @@ int main() {
         ImGui::SFML::Update(window, deltaClock.restart());
         cityController.update(deltaClock.restart());
         window.clear();
-        ImGui::SFML::Render(window);
         cityController.draw();
+        ImGui::SFML::Render(window);
         window.display();
     };
 

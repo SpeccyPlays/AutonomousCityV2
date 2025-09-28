@@ -9,7 +9,7 @@ namespace AutoCity {
         private:
             sf::Vector2i gridStart;
             sf::Vector2i gridEnd;
-            sf::Vector2i gridSize;
+            sf::Vector2u gridSize;
             std::vector<std::vector<Tile>> grid;
             void newGrid();
             void newGrid(const Event& e);

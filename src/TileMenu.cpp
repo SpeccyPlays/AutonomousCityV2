@@ -21,6 +21,10 @@ namespace AutoCity {
         if (allTiles.size() > 0){
             float tileX = window.getSize().x - TileManager::tileSize.x;
             float tileY = 0 + 43.f; //
+            sf::RectangleShape rectangle({float(TileManager::tileSize.x * 3), float(window.getSize().y)});
+            rectangle.setFillColor(sf::Color::Black);
+            rectangle.setPosition({float(window.getSize().x - (TileManager::tileSize.x * 3)), 0.f});
+            window.draw(rectangle);
             for (auto& tile : allTiles){
                 tile.sprite.setPosition({tileX, tileY});
                 window.draw(tile.sprite);
@@ -31,7 +35,7 @@ namespace AutoCity {
     void TileMenu::showTileMenu(){
         if (allTiles.size() > 0){
             //Make sure menu is fixed size and stays to the right
-            ImGui::SetNextWindowSize(ImVec2(TileManager::tileSize.x * 2, window.getSize().y));
+            ImGui::SetNextWindowSize(ImVec2(TileManager::tileSize.x + 4, window.getSize().y));
             ImGui::SetNextWindowPos(ImVec2(window.getSize().x - (TileManager::tileSize.x * 3), 0));     
             ImGui::Begin("Tiles:", nullptr,
                         ImGuiWindowFlags_NoResize |

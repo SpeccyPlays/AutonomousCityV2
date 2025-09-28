@@ -6,9 +6,11 @@ namespace AutoCity {
 
     CityGridController::CityGridController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus) {
         sf::Vector2u windowSize = window.getSize();
+        //We're going to draw the grid using the whole window
+        //however, we will not allow tiles to be placed in the menu areas
         gridStart = {0, AutoCity::TileManager::tileSize.y};
         gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - AutoCity::TileManager::tileSize.y)};
-        gridSize = {(gridEnd.x - gridStart.x) / AutoCity::TileManager::tileSize.x, (gridEnd.y - gridStart.y) / AutoCity::TileManager::tileSize.y};
+        gridSize = {windowSize.x / AutoCity::TileManager::tileSize.x, windowSize.y / AutoCity::TileManager::tileSize.y};
         newGrid();
     };
     void CityGridController::init(){
@@ -83,7 +85,6 @@ namespace AutoCity {
         return true;
     };
     void CityGridController::addTileToGrid(sf::Vector2u pos, Tile tile){
-        //do this or it looks off by one tile later
         sf::Vector2u gridPos = pixelToGridPos(pos);
         if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
             tile.sprite.setOrigin({0, 0});
@@ -91,8 +92,8 @@ namespace AutoCity {
         };
     };
     sf::Vector2u CityGridController::pixelToGridPos(sf::Vector2u pos){
-        sf::Vector2u gridPos = {static_cast<unsigned int>(std::round((pos.x - gridStart.x) / float(TileManager::tileSize.x))), 
-            static_cast<unsigned int>(std::round((pos.y - gridStart.y) / float(TileManager::tileSize.y)))};
+        sf::Vector2u gridPos = {(pos.x + TileManager::tileSize.x / 2) / TileManager::tileSize.x, 
+            (pos.y + TileManager::tileSize.y / 2) / TileManager::tileSize.y};
         return gridPos;
     };
 };
