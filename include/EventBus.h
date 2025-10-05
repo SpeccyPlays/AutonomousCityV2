@@ -11,7 +11,8 @@ namespace AutoCity {
         Save,
         SaveAs,
         Quit,
-        Debug,
+        DebugGrid,
+        DebugAgents,
         TilesLoaded, //payload std::map<TileType, std::map<TileSubType, Tile>>
         TileSelected, //payload &tile
         TileAdded, //payload of std::pair<Tile, sf::Vector2u> tileInfo

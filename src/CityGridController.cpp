@@ -14,9 +14,11 @@ namespace AutoCity {
         newGrid();
     };
     void CityGridController::init(){
+        this->toggleDebug(); //should switch debug on
         bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
         bus.subscribe(AutoCity::EventType::AddAgent, [this](const Event& e) { addAgent(e); });
+        bus.subscribe(AutoCity::EventType::DebugGrid, [this](const Event& e) { this->toggleDebug(); });
     };
     void CityGridController::processEvents(const sf::Event& event){
     };
@@ -37,24 +39,25 @@ namespace AutoCity {
         drawTiles();
     };
     void CityGridController::drawGrid(){
-        for (int col = 0; col <= gridSize.x; col++) {
-            int x = gridStart.x + col * AutoCity::TileManager::tileSize.x;
-            std::array line = {
-                sf::Vertex{sf::Vector2f(x, gridStart.y)},
-                sf::Vertex{sf::Vector2f(x, gridStart.y + gridSize.y * AutoCity::TileManager::tileSize.y)}
-            };
-            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
-        }
+        if (CityObject::getDebug()){
+            for (int col = 0; col <= gridSize.x; col++) {
+                int x = gridStart.x + col * AutoCity::TileManager::tileSize.x;
+                std::array line = {
+                    sf::Vertex{sf::Vector2f(x, gridStart.y)},
+                    sf::Vertex{sf::Vector2f(x, gridStart.y + gridSize.y * AutoCity::TileManager::tileSize.y)}
+                };
+                window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+            }
 
-        for (int row = 0; row < gridSize.y; row++) {
-            int y = gridStart.y + row * AutoCity::TileManager::tileSize.y;
-            std::array line = {
-                sf::Vertex{sf::Vector2f(gridStart.x, y)},
-                sf::Vertex{sf::Vector2f(gridStart.x + gridSize.x * AutoCity::TileManager::tileSize.x, y)}
-            };
-            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
-        }
-
+            for (int row = 0; row < gridSize.y; row++) {
+                int y = gridStart.y + row * AutoCity::TileManager::tileSize.y;
+                std::array line = {
+                    sf::Vertex{sf::Vector2f(gridStart.x, y)},
+                    sf::Vertex{sf::Vector2f(gridStart.x + gridSize.x * AutoCity::TileManager::tileSize.x, y)}
+                };
+                window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+            }
+        };
     };
     void CityGridController::drawTiles(){
         for (int i = 0; i < grid.size(); i++){

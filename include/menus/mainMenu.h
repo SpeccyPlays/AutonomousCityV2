@@ -15,6 +15,8 @@ namespace AutoCity {
             void showMainMenu();
             void showFileOptions();
             void showToolsOptions();
+            bool debugGrid = true; //make sure in the CityGridController that this is toggled in the init as off for all CityObjects by default;
+            bool debugAgents = false;
         public:
             MainMenu(sf::RenderWindow& renderWindow, EventBus& eventBus);
             void init() override;

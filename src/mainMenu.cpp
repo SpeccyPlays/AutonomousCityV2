@@ -21,7 +21,10 @@ namespace AutoCity {
                 showFileOptions();
                 ImGui::EndMenu();
             };
-            if (ImGui::BeginMenu("Tools")){
+            if (ImGui::BeginMenu("Add..")){
+                ImGui::EndMenu();
+            };
+            if (ImGui::BeginMenu("Debug")){
                 showToolsOptions();
                 ImGui::EndMenu();
             };
@@ -48,9 +51,12 @@ namespace AutoCity {
         }
     };
     void MainMenu::showToolsOptions(){
-        ImGui::MenuItem("(Tools menu)", NULL, false, false);
-        if (ImGui::MenuItem("Debug")) {
-            bus.publish(EventType::Debug);
+        ImGui::MenuItem("(Debug options)", NULL, false, false);
+        if (ImGui::Checkbox("Debug Grid", &debugGrid)) {
+            bus.publish(EventType::DebugGrid);
+        };
+        if (ImGui::Checkbox("Debug Agents", &debugAgents)) {
+            bus.publish(EventType::DebugAgents);
         };
     };
 };
