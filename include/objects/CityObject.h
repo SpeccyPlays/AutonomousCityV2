@@ -18,6 +18,9 @@ namespace AutoCity {
             virtual void processEvents(const sf::Event& event) = 0;
             virtual void update(sf::Time delta) = 0;
             virtual void draw() = 0;
+            bool getDebug(){
+                return debug;
+            };
             void toggleDebug(){
                 debug = !debug;
             };

@@ -5,8 +5,9 @@
 #include "../include/objects/CityObject.h"
 #include "../include/menus/MainMenu.h"
 #include "../include/menus/TileMenu.h"
-#include "../include/CityGrid/CityGridController.h"
+#include "../include/controllers/CityGridController.h"
 #include "../include/CityGrid/Tile.h"
+#include "../include/controllers/AgentController.h"
 
 namespace AutoCity {
     class CityObjectController : public CityObject{

@@ -7,6 +7,7 @@ namespace AutoCity {
         objects.push_back(std::make_unique<CityGridController>(window, bus));
         objects.push_back(std::make_unique<MainMenu>(window, bus));
         objects.push_back(std::make_unique<TileMenu>(window, bus));
+        objects.push_back(std::make_unique<AgentController>(window, bus));
     };
     void CityObjectController::init(){
         for (auto& object : objects){

@@ -3,6 +3,7 @@
 #include "../include/objects/CityObject.h"
 #include "../include/CityGrid/Tile.h"
 #include "../include/CityGrid/TileManager.h"
+#include "../include/agents/Agent.h"
 
 namespace AutoCity {
     class CityGridController : public CityObject{
@@ -19,6 +20,8 @@ namespace AutoCity {
             bool checkInGrid(sf::Vector2u pos);
             void addTileToGrid(sf::Vector2u pos, Tile tile);
             sf::Vector2u pixelToGridPos(sf::Vector2u pos);
+            void addAgent(const Event& e);
+            void removeAgent(const Event& e);
         public:
             CityGridController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

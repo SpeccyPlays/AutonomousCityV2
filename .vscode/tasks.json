@@ -23,6 +23,8 @@
           "src/MainMenu.cpp",
           "src/CityObjectController.cpp",
           "src/CityGridController.cpp",
+          "src/AgentController.cpp",
+          "src/Agent.cpp",
           "src/TextureManager.cpp",
           "src/TileManager.cpp",
           "src/TileMenu.cpp",

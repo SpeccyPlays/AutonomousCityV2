@@ -1,4 +1,4 @@
-#include "../include/CityGrid/CityGridController.h"
+#include "../include/controllers/CityGridController.h"
 #include <iostream>
 #include <math.h>
 
@@ -16,6 +16,7 @@ namespace AutoCity {
     void CityGridController::init(){
         bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
+        bus.subscribe(AutoCity::EventType::AddAgent, [this](const Event& e) { addAgent(e); });
     };
     void CityGridController::processEvents(const sf::Event& event){
     };
@@ -95,5 +96,11 @@ namespace AutoCity {
         sf::Vector2u gridPos = {(pos.x + TileManager::tileSize.x / 2) / TileManager::tileSize.x, 
             (pos.y + TileManager::tileSize.y / 2) / TileManager::tileSize.y};
         return gridPos;
+    };
+    void CityGridController::addAgent(const Event& e){
+
+    };
+    void CityGridController::removeAgent(const Event& e){
+
     };
 };
