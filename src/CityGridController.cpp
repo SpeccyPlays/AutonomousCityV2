@@ -89,7 +89,6 @@ namespace AutoCity {
         };
     };
     bool CityGridController::checkInGrid(sf::Vector2f pos){
-        std::cout << "Tile X: " << pos.x << " Tile Y: " << pos.y << std::endl;
         if (pos.x < gridStart.x || pos.y < gridStart.y || pos.x >= gridEnd.x || pos.y >= gridEnd.y){
             return false;
         };

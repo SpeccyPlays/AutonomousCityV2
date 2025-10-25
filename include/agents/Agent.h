@@ -1,9 +1,31 @@
 #pragma once
 
 #include "../include/objects/CityObject.h"
+#include <random>
 
 namespace AutoCity {
     class Agent : public CityObject{
+        protected:
+            enum class AgentState {
+                Standard,
+                Wandering
+            };
+            sf::Vector2f currentPos;
+            sf::Vector2f velocity;
+            sf::Vector2f acceleration;
+            sf::Vector2f desiredPos;
+            float angle;
+            float maxspeed;
+            float currentSpeed;
+            float accelerationRate;
+            float decelerationRate;
+            float wanderingDistance;
+            AgentState agentState;
+            std::string texturePath;
+            //used for random wandering
+            std::mt19937 rngSeed;
+            std::uniform_real_distribution<float> wanderDist;
+            std::uniform_real_distribution<float> randomAngle;
         private:
 
         public:
