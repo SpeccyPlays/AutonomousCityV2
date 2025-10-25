@@ -28,7 +28,7 @@ namespace AutoCity {
                 //do this to make a new tile from the pointer
                 Tile* tilePtr = selectedTile.get();
                 Tile newTile = *tilePtr;
-                std::pair<Tile, sf::Vector2u> tileInfo(newTile, mouseEvent->position);
+                std::pair<Tile, sf::Vector2i> tileInfo(newTile, mouseEvent->position);
                 Event event = {EventType::TileAdded, tileInfo};
                 bus.publish(event);
             };

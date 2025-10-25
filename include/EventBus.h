@@ -15,7 +15,7 @@ namespace AutoCity {
         DebugAgents,
         TilesLoaded, //payload std::map<TileType, std::map<TileSubType, Tile>>
         TileSelected, //payload &tile
-        TileAdded, //payload of std::pair<Tile, sf::Vector2u> tileInfo
+        TileAdded, //payload of std::pair<Tile, sf::Vector2i> tileInfo
         AddAgent, //payload of std::pair<Agent*, sf::Vector2f>
         RemoveAgent, //payload of std::pair<Agent*, sf::Vector2f>
         AgentAdded, //payload of std::pair<Agent*, sf::Vector2u>

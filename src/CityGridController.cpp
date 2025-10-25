@@ -1,9 +1,12 @@
 #include "../include/controllers/CityGridController.h"
+#include "../include/agents/Agent.h"
 #include <iostream>
 #include <math.h>
 
 namespace AutoCity {
 
+    class Agent;
+    
     CityGridController::CityGridController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus) {
         sf::Vector2u windowSize = window.getSize();
         //We're going to draw the grid using the whole window
@@ -26,12 +29,14 @@ namespace AutoCity {
     };
     void CityGridController::newGrid(){
         Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
-        grid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
+        Cell cell = {defaultTile};
+        grid.resize(gridSize.y, std::vector<Cell>(gridSize.x, cell));
     };
     void CityGridController::newGrid(const Event& e){
         Tile defaultTile = TileManager::getTile(TileType::Default, TileSubType::NoFlow);
-        std::vector<std::vector<Tile>> newGrid;
-        newGrid.resize(gridSize.y, std::vector<Tile>(gridSize.x, defaultTile));
+        Cell cell = {defaultTile};
+        std::vector<std::vector<Cell>> newGrid;
+        newGrid.resize(gridSize.y, std::vector<Cell>(gridSize.x, cell));
         grid = newGrid;
     };
     void CityGridController::draw(){
@@ -62,7 +67,7 @@ namespace AutoCity {
     void CityGridController::drawTiles(){
         for (int i = 0; i < grid.size(); i++){
             for (int j = 0; j < grid[i].size(); j++){
-                Tile tile = grid[i][j];
+                Tile tile = grid[i][j].tile;
                 if (tile.type != TileType::Default){
                     sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
                     tile.sprite.setPosition(drawPos);
@@ -72,9 +77,10 @@ namespace AutoCity {
         };
     };
     void CityGridController::addTile(const Event& e){
-        auto placementInfo = std::any_cast<std::pair<Tile, sf::Vector2u>>(e.payload);
+        auto placementInfo = std::any_cast<std::pair<Tile, sf::Vector2i>>(e.payload);
         Tile tile = placementInfo.first;
-        sf::Vector2u tilePos = placementInfo.second;
+        //Get 'true' mouse pos
+        sf::Vector2f tilePos = window.mapPixelToCoords(placementInfo.second);
         if (!checkInGrid(tilePos)){
             std::cout << "Tile out of bounds" << std::endl;
         }
@@ -82,22 +88,24 @@ namespace AutoCity {
             addTileToGrid(tilePos, tile);
         };
     };
-    bool CityGridController::checkInGrid(sf::Vector2u pos){
+    bool CityGridController::checkInGrid(sf::Vector2f pos){
+        std::cout << "Tile X: " << pos.x << " Tile Y: " << pos.y << std::endl;
         if (pos.x < gridStart.x || pos.y < gridStart.y || pos.x >= gridEnd.x || pos.y >= gridEnd.y){
             return false;
         };
         return true;
     };
-    void CityGridController::addTileToGrid(sf::Vector2u pos, Tile tile){
+    void CityGridController::addTileToGrid(sf::Vector2f pos, Tile tile){
         sf::Vector2u gridPos = pixelToGridPos(pos);
         if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
             tile.sprite.setOrigin({0, 0});
-            grid[gridPos.y][gridPos.x] = tile;
+            grid[gridPos.y][gridPos.x].tile = tile;
         };
     };
-    sf::Vector2u CityGridController::pixelToGridPos(sf::Vector2u pos){
-        sf::Vector2u gridPos = {(pos.x + TileManager::tileSize.x / 2) / TileManager::tileSize.x, 
-            (pos.y + TileManager::tileSize.y / 2) / TileManager::tileSize.y};
+    sf::Vector2u CityGridController::pixelToGridPos(sf::Vector2f pos){
+        unsigned int xPos = static_cast<unsigned int>(std::floor(pos.x / TileManager::tileSize.x));
+        unsigned int yPos = static_cast<unsigned int>(std::floor(pos.y / TileManager::tileSize.y));
+        sf::Vector2u gridPos = {xPos, yPos};
         return gridPos;
     };
     void CityGridController::addAgent(const Event& e){
