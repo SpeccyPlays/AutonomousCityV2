@@ -18,6 +18,7 @@ namespace AutoCity {
             void processEvents(const sf::Event& event) override;
             void update(sf::Time delta) override;
             void draw() override;
+            
         private:
             sf::Vector2i gridStart;
             sf::Vector2i gridEnd;
@@ -31,7 +32,11 @@ namespace AutoCity {
             bool checkInGrid(sf::Vector2f pos);
             void addTileToGrid(sf::Vector2f pos, Tile tile);
             sf::Vector2u pixelToGridPos(sf::Vector2f pos);
-            void addAgent(const Event& e);
-            void removeAgent(const Event& e);  
+            void removeAgent(const Event& e);
+            void addAgent(Agent *agent, sf::Vector2u agentGridPos);
+            void agentUpdate(const Event& e);
+            bool isAgentOnGrid(Agent *agent, sf::Vector2f agentPos);
+            bool isAgentAlone(Agent *agent, sf::Vector2u agentGridPos);
+            void sendFlowMap(Agent *agent, sf::Vector2u agentGridPos);
     };
 };

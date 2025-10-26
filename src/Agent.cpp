@@ -32,4 +32,7 @@ namespace AutoCity {
     void Agent::draw(){
 
     };
+    sf::Vector2f Agent::getPos(){
+        return pos;
+    };
 };

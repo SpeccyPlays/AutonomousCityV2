@@ -10,7 +10,7 @@ namespace AutoCity {
                 Standard,
                 Wandering
             };
-            sf::Vector2f currentPos;
+            sf::Vector2f pos;
             sf::Vector2f velocity;
             sf::Vector2f acceleration;
             sf::Vector2f desiredPos;
@@ -34,6 +34,6 @@ namespace AutoCity {
             void processEvents(const sf::Event& event) override;
             void update(sf::Time delta) override;
             void draw() override;
-            
+            sf::Vector2f getPos();            
     };
 };

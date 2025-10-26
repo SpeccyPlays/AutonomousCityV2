@@ -16,9 +16,15 @@ namespace AutoCity {
         TilesLoaded, //payload std::map<TileType, std::map<TileSubType, Tile>>
         TileSelected, //payload &tile
         TileAdded, //payload of std::pair<Tile, sf::Vector2i> tileInfo
-        AddAgent, //payload of std::pair<Agent*, sf::Vector2f>
-        RemoveAgent, //payload of std::pair<Agent*, sf::Vector2f>
-        AgentAdded, //payload of std::pair<Agent*, sf::Vector2u>
+        RemoveAgent, //std::pair<Agent*, sf::Vector2f>
+        AgentUpdate, //pay std::pair<Agent*, sf::Vector2f>
+        AgentOffGrid, //payload std::pair<Agent*, std::array>
+        AgentCollision,
+        RoadFlowMap,
+        //AddAgent, //payload of std::pair<Agent*, sf::Vector2f>
+        //RemoveAgent, //payload of std::pair<Agent*, sf::Vector2f>
+        //AgentAdded, //payload of std::pair<Agent*, sf::Vector2u>
+        
         Error
     };
     struct Event {
