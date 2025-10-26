@@ -1,12 +1,14 @@
 #include "../include/controllers/AgentController.h"
 #include <iostream>
+#include <unordered_set>
+#include <array>
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
 
     };
     void AgentController::init(){
-        bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleDebug(); });
+        bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleAllDebug(); });
         bus.subscribe(AutoCity::EventType::AgentOffGrid, [this](const Event& e) { this->offGridHandler(e); });
         bus.subscribe(AutoCity::EventType::AgentCollision, [this](const Event& e) { this->collisionHandler(e); });
         bus.subscribe(AutoCity::EventType::RoadFlowMap, [this](const Event& e) { this->roadFlowHandler(e); });
@@ -39,12 +41,28 @@ namespace AutoCity {
         }
     };
     void AgentController::offGridHandler(const Event& e){
+        //payload std::pair<Agent*, std::array>
+        const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
+        Agent* agent = payload.first;
+        const std::array<bool, 4>& offGrid = payload.second;
 
     };
     void AgentController::collisionHandler(const Event& e){
-
+        //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
+        const auto& payload = std::any_cast<std::pair<Agent*, std::unordered_set<AutoCity::Agent*>>>(e.payload);
+        Agent* agent = payload.first;
+        const std::unordered_set<AutoCity::Agent*>& occupants = payload.second;
     };
     void AgentController::roadFlowHandler(const Event& e){
-
-    }
+        //payload std::pair<Agent*, std::vector<sf::Angle>
+        const auto& payload = std::any_cast<std::pair<Agent*, std::vector<sf::Angle>>>(e.payload);
+        Agent* agent = payload.first;
+        std::vector<sf::Angle> flowMap = payload.second;
+    };
+    void AgentController::toggleAllDebug(){
+        for (auto& agentPtr : agents){
+            Agent& agent = *agentPtr;
+            agent.toggleDebug();
+        }
+    };
 };

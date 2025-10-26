@@ -19,12 +19,8 @@ namespace AutoCity {
         RemoveAgent, //std::pair<Agent*, sf::Vector2f>
         AgentUpdate, //pay std::pair<Agent*, sf::Vector2f>
         AgentOffGrid, //payload std::pair<Agent*, std::array>
-        AgentCollision,
-        RoadFlowMap,
-        //AddAgent, //payload of std::pair<Agent*, sf::Vector2f>
-        //RemoveAgent, //payload of std::pair<Agent*, sf::Vector2f>
-        //AgentAdded, //payload of std::pair<Agent*, sf::Vector2u>
-        
+        AgentCollision, //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
+        RoadFlowMap, //payload std::pair<Agent*, std::vector<sf::Angle>     
         Error
     };
     struct Event {
