@@ -19,7 +19,7 @@ namespace AutoCity {
         std::uniform_real_distribution<float> angleDist(-1.5708f, 1.5708f);
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
-        AutoCity::TextureManager::getTexture(texturePath);
+        AutoCity::TextureManager::getTexture("include/textures/car.png");
         AutoCity::TextureManager::getTexture("include/textures/carboyracer.png");
         AutoCity::TextureManager::getTexture("include/textures/caroldperson.png");
     };

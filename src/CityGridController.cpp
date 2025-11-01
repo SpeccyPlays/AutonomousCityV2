@@ -74,6 +74,12 @@ namespace AutoCity {
                     sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
                     tile.sprite.setPosition(drawPos);
                     window.draw(tile.sprite);
+                    //Show if a cell has occupants 
+                    if (CityObject::getDebug() && grid[i][j].occupants.size() > 0){
+                        sf::RectangleShape square(sf::Vector2f(AutoCity::TileManager::tileSize.x, AutoCity::TileManager::tileSize.y));
+                        square.setFillColor(sf::Color(255, 0, 0, 128));
+                        window.draw(square);
+                    }
                 };
             };
         };
