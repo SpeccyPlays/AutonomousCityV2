@@ -48,6 +48,21 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
+        //offGrid array is Top, Right, Bottom, Left
+        //Either off Top or bottom, not both
+        if (offGrid[0] == true){
+            agent->offTopOfGrid();
+        }
+        else if (offGrid[2] == true){
+            agent->offBottomOfGrid();
+        };
+        //either off right or left, not both
+        if (offGrid[1] == true){
+            agent->offRightOfGrid();
+        }
+        else if (offGrid[3] == true){
+            agent->offLeftOfGrid();
+        };
 
     };
     void AgentController::collisionHandler(const Event& e){

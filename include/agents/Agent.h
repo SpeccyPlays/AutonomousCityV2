@@ -34,6 +34,10 @@ namespace AutoCity {
             void processEvents(const sf::Event& event) override;
             void update(sf::Time delta) override;
             void draw() override;
-            sf::Vector2f getPos();            
+            sf::Vector2f getPos();
+            void offTopOfGrid();
+            void offBottomOfGrid();
+            void offLeftOfGrid();
+            void offRightOfGrid();         
     };
 };

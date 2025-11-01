@@ -145,7 +145,20 @@ namespace AutoCity {
         sendFlowMap(agent, gridPos);
     };
     bool CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
+        //offGrid array is Top, Right, Bottom, Left
         std::array<bool, 4> offGrid = {false, false, false, false};
+        if (agentPos.y < gridStart.y){
+            offGrid[0] = true;
+        };
+        if (agentPos.x > gridEnd.x){
+            offGrid[1] = true;
+        };
+        if (agentPos.y > gridEnd.y){
+            offGrid[2] = true;
+        };
+        if (agentPos.x < gridStart.x){
+            offGrid[3] = true;
+        };
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
             Event event = {EventType::AgentOffGrid, std::pair{agent, offGrid}};

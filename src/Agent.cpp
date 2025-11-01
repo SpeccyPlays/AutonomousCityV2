@@ -8,7 +8,6 @@ namespace AutoCity {
         currentPos.y = windowSize.y / 2;
     };
     void Agent::init(){
-        
         maxspeed = 50;
         wanderingDistance = 0.01f;
         agentState = AgentState::Wandering;
@@ -40,4 +39,16 @@ namespace AutoCity {
     sf::Vector2f Agent::getPos(){
         return currentPos;
     };
+    void Agent::offTopOfGrid(){
+
+    };
+    void Agent::offBottomOfGrid(){
+
+    };
+    void Agent::offLeftOfGrid(){
+
+    };
+    void Agent::offRightOfGrid(){
+        
+    };  
 };
