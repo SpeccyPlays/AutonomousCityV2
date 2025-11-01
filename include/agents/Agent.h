@@ -14,6 +14,7 @@ namespace AutoCity {
             sf::Vector2f velocity;
             sf::Vector2f acceleration;
             sf::Vector2f desiredPos;
+            float currentDeltaTime;
             float angle;
             float maxspeed;
             float currentSpeed;
@@ -29,6 +30,9 @@ namespace AutoCity {
         private:
             void steerLeft();
             void steerRight();
+            void accelerate();
+            void setVelocity();
+            
         public:
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;
@@ -37,9 +41,12 @@ namespace AutoCity {
             void draw() override;
             sf::Vector2f getPos();
             sf::Vector2f getDesiredPos();
+            void slowDown();
+            void setDesired();
             void offTopOfGrid();
             void offBottomOfGrid();
             void offLeftOfGrid();
-            void offRightOfGrid();         
-    };
+            void offRightOfGrid();
+            void setCurrentPosToDesired();
+            };
 };

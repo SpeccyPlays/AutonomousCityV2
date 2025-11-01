@@ -13,7 +13,8 @@ namespace AutoCity {
         //We're going to draw the grid using the whole window
         //however, we will not allow tiles to be placed in the menu areas
         gridStart = {0, AutoCity::TileManager::tileSize.y};
-        gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - AutoCity::TileManager::tileSize.y)};
+        //below just so visually it's not off screen
+        gridEnd = {static_cast<int>(windowSize.x - (AutoCity::TileManager::tileSize.x * 3)),static_cast<int>(windowSize.y - (AutoCity::TileManager::tileSize.y * 4))};
         gridSize = {windowSize.x / AutoCity::TileManager::tileSize.x, windowSize.y / AutoCity::TileManager::tileSize.y};
         newGrid();
     };

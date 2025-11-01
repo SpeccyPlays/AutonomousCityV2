@@ -1,5 +1,7 @@
 #include "../include/agents/Agent.h"
 #include "../include/textures/TextureManager.h"
+#include <iostream>
+#define M_PI 3.14159265358979323846  /* pi */
 
 namespace AutoCity {
     Agent::Agent(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
@@ -17,7 +19,7 @@ namespace AutoCity {
         currentSpeed = 0.f;
         rngSeed = std::mt19937(std::random_device{}());
         wanderDist = std::uniform_real_distribution<float>(-wanderingDistance, wanderingDistance);
-        std::uniform_real_distribution<float> angleDist(-1.5708f, 1.5708f);
+        std::uniform_real_distribution<float> angleDist(0, 360);
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
         AutoCity::TextureManager::getTexture("include/textures/car.png");
@@ -28,12 +30,24 @@ namespace AutoCity {
 
     };
     void Agent::update(sf::Time delta){
-
+        currentDeltaTime = delta.asSeconds();
+        accelerate();
+        setDesired();
+        if (CityObject::getDebug()){
+            std::array line = {
+                sf::Vertex{currentPos},
+                sf::Vertex{desiredPos}
+            };
+            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        };
     };
     void Agent::draw(){
         sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
         sf::Sprite sprite(tex);
+        sf::Vector2f texSize = static_cast<sf::Vector2f>(tex.getSize());
+        sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f});
         sprite.setPosition(currentPos);
+        sprite.setRotation(sf::degrees(angle));
         window.draw(sprite);
     };
     sf::Vector2f Agent::getPos(){
@@ -55,18 +69,18 @@ namespace AutoCity {
     };
     void Agent::offBottomOfGrid(){
         if (velocity.x < 0){
-            steerRight();
+            steerLeft();
         }
         else {
-            steerLeft();
+            steerRight();
         }
     };
     void Agent::offLeftOfGrid(){
         if (velocity.y < 0){
-            steerRight();
+            steerLeft();
         }
         else {
-            steerLeft();
+            steerRight();
         }
     };
     void Agent::offRightOfGrid(){
@@ -78,9 +92,46 @@ namespace AutoCity {
         }
     };
     void Agent::steerLeft(){
-
+        //copied from previous version
+        float steeringAmount = 5;
+        angle -= steeringAmount;
+        setVelocity();
     };
     void Agent::steerRight(){
-
+        //copied from previous version
+        float steeringAmount = 5;
+        angle += steeringAmount;
+        setVelocity();
+    };
+    void Agent::accelerate(){
+        //copied from previous version
+        currentSpeed += accelerationRate * currentDeltaTime;
+        if (currentSpeed > maxspeed){
+            currentSpeed = maxspeed;
+        };
+        setVelocity();
+    };
+    void Agent::slowDown(){
+        //copied from previous version
+        currentSpeed *= decelerationRate;
+        if (currentSpeed < 1){
+            currentSpeed = 0.f;
+        }
+        setVelocity();
+    };
+    void Agent::setVelocity(){
+        //copied from previous version
+        double radians = angle * M_PI / 180.0;
+        velocity.x = std::cos(radians) * currentSpeed;
+        velocity.y = std::sin(radians) * currentSpeed;
+        std::cout << "Velocity X: " << velocity.x << " Y: " << velocity.y << std::endl;
+        std::cout << "Angle is : " << angle << std::endl;
+    };
+    void Agent::setDesired(){
+        //copied from previous version
+        desiredPos = currentPos + velocity;// * currentDeltaTime;
+    };
+    void Agent::setCurrentPosToDesired(){
+        currentPos = desiredPos;
     };
 };

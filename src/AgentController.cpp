@@ -48,6 +48,7 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
+        agent->slowDown();
         //offGrid array is Top, Right, Bottom, Left
         //Either off Top or bottom, not both
         if (offGrid[0] == true){
@@ -63,7 +64,8 @@ namespace AutoCity {
         else if (offGrid[3] == true){
             agent->offLeftOfGrid();
         };
-
+        agent->setDesired();
+        agent->setCurrentPosToDesired();
     };
     void AgentController::collisionHandler(const Event& e){
         //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
@@ -76,6 +78,7 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::vector<sf::Angle>>>(e.payload);
         Agent* agent = payload.first;
         std::vector<sf::Angle> flowMap = payload.second;
+        agent->setCurrentPosToDesired();
     };
     void AgentController::toggleAllDebug(){
         for (auto& agentPtr : agents){
