@@ -3,10 +3,12 @@
 
 namespace AutoCity {
     Agent::Agent(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
-        
+        sf::Vector2f windowSize = static_cast<sf::Vector2f>(window.getSize());
+        currentPos.x = windowSize.x / 2;
+        currentPos.y = windowSize.y / 2;
     };
     void Agent::init(){
-        //currentPos = pos;
+        
         maxspeed = 50;
         wanderingDistance = 0.01f;
         agentState = AgentState::Wandering;
@@ -30,9 +32,12 @@ namespace AutoCity {
 
     };
     void Agent::draw(){
-
+        sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
+        sf::Sprite sprite(tex);
+        sprite.setPosition(currentPos);
+        window.draw(sprite);
     };
     sf::Vector2f Agent::getPos(){
-        return pos;
+        return currentPos;
     };
 };
