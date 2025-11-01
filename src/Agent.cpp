@@ -39,16 +39,48 @@ namespace AutoCity {
     sf::Vector2f Agent::getPos(){
         return currentPos;
     };
+    sf::Vector2f Agent::getDesiredPos(){
+        return desiredPos;
+    };
+    //For the off grids, check velocities to work out which way to steer
+    //a negative x means agent going right to left, oppposite if positive
+    //a negative y means agents going bottom to top, oppposite if positive
     void Agent::offTopOfGrid(){
-
+        if (velocity.x < 0){
+            steerLeft();
+        }
+        else {
+            steerRight();
+        }
     };
     void Agent::offBottomOfGrid(){
-
+        if (velocity.x < 0){
+            steerRight();
+        }
+        else {
+            steerLeft();
+        }
     };
     void Agent::offLeftOfGrid(){
-
+        if (velocity.y < 0){
+            steerRight();
+        }
+        else {
+            steerLeft();
+        }
     };
     void Agent::offRightOfGrid(){
-        
-    };  
+        if (velocity.y < 0){
+            steerLeft();
+        }
+        else {
+            steerRight();
+        }
+    };
+    void Agent::steerLeft(){
+
+    };
+    void Agent::steerRight(){
+
+    };
 };

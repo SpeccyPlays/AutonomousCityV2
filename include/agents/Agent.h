@@ -27,7 +27,8 @@ namespace AutoCity {
             std::uniform_real_distribution<float> wanderDist;
             std::uniform_real_distribution<float> randomAngle;
         private:
-
+            void steerLeft();
+            void steerRight();
         public:
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;
@@ -35,6 +36,7 @@ namespace AutoCity {
             void update(sf::Time delta) override;
             void draw() override;
             sf::Vector2f getPos();
+            sf::Vector2f getDesiredPos();
             void offTopOfGrid();
             void offBottomOfGrid();
             void offLeftOfGrid();

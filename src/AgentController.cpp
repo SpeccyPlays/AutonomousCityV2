@@ -33,7 +33,7 @@ namespace AutoCity {
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
             agent.update(delta);
-            Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getPos()}};
+            Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getDesiredPos()}};
             bus.publish(event);
         };
     };
