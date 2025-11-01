@@ -32,7 +32,7 @@ namespace AutoCity {
             void steerRight();
             void accelerate();
             void setVelocity();
-            
+            void wrapAngle();
         public:
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

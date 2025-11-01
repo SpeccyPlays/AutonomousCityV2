@@ -1,6 +1,7 @@
 #include "../include/agents/Agent.h"
 #include "../include/textures/TextureManager.h"
 #include <iostream>
+#include <cmath>
 #define M_PI 3.14159265358979323846  /* pi */
 
 namespace AutoCity {
@@ -95,12 +96,14 @@ namespace AutoCity {
         //copied from previous version
         float steeringAmount = 5;
         angle -= steeringAmount;
+        wrapAngle();
         setVelocity();
     };
     void Agent::steerRight(){
         //copied from previous version
         float steeringAmount = 5;
         angle += steeringAmount;
+        wrapAngle();
         setVelocity();
     };
     void Agent::accelerate(){
@@ -134,4 +137,11 @@ namespace AutoCity {
     void Agent::setCurrentPosToDesired(){
         currentPos = desiredPos;
     };
+    void Agent::wrapAngle(){
+        //Wrap or the agent ends up with some mad angles.
+        angle = std::fmod(angle, 360.0f); // get remainder after division by 360
+        if (angle < 0) {
+            angle += 360.0f; // ensure it's positive
+        }
+    }
 };
