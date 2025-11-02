@@ -31,7 +31,7 @@ namespace AutoCity {
             void steerLeft();
             void steerRight();
             void accelerate();
-            void setVelocity();
+            
             void wrapAngle();
         public:
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
@@ -40,6 +40,7 @@ namespace AutoCity {
             void update(sf::Time delta) override;
             void draw() override;
             sf::Vector2f getPos();
+            sf::Vector2f getLookAheadPos();
             sf::Vector2f getDesiredPos();
             void slowDown();
             void setDesired();
@@ -47,6 +48,7 @@ namespace AutoCity {
             void offBottomOfGrid();
             void offLeftOfGrid();
             void offRightOfGrid();
+            void setVelocity();
             void setCurrentPosToDesired();
-            };
+        };
 };

@@ -54,6 +54,21 @@ namespace AutoCity {
     sf::Vector2f Agent::getPos(){
         return currentPos;
     };
+    sf::Vector2f Agent::getLookAheadPos(){
+        float speed = currentSpeed;
+        speed += accelerationRate;
+        sf::Vector2f tempVelocity({0, 0});
+        double radians = angle * M_PI / 180.0;
+        tempVelocity.x = std::cos(radians) * speed;
+        tempVelocity.y = std::sin(radians) * speed;
+        sf::Vector2f lookAheadPos = currentPos + tempVelocity;
+            std::array line = {
+                sf::Vertex{currentPos},
+                sf::Vertex{lookAheadPos}
+            };
+            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        return lookAheadPos;
+    };
     sf::Vector2f Agent::getDesiredPos(){
         return desiredPos;
     };
@@ -61,6 +76,7 @@ namespace AutoCity {
     //a negative x means agent going right to left, oppposite if positive
     //a negative y means agents going bottom to top, oppposite if positive
     void Agent::offTopOfGrid(){
+        slowDown();
         if (velocity.x < 0){
             steerLeft();
         }
@@ -69,6 +85,7 @@ namespace AutoCity {
         }
     };
     void Agent::offBottomOfGrid(){
+        slowDown();
         if (velocity.x < 0){
             steerLeft();
         }
@@ -77,6 +94,7 @@ namespace AutoCity {
         }
     };
     void Agent::offLeftOfGrid(){
+        slowDown();
         if (velocity.y < 0){
             steerLeft();
         }
@@ -85,6 +103,7 @@ namespace AutoCity {
         }
     };
     void Agent::offRightOfGrid(){
+        slowDown();
         if (velocity.y < 0){
             steerLeft();
         }
@@ -127,8 +146,6 @@ namespace AutoCity {
         double radians = angle * M_PI / 180.0;
         velocity.x = std::cos(radians) * currentSpeed;
         velocity.y = std::sin(radians) * currentSpeed;
-        std::cout << "Velocity X: " << velocity.x << " Y: " << velocity.y << std::endl;
-        std::cout << "Angle is : " << angle << std::endl;
     };
     void Agent::setDesired(){
         //copied from previous version

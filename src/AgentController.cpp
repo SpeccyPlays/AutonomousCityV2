@@ -33,8 +33,12 @@ namespace AutoCity {
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
             agent.update(delta);
+            //Check further ahead to see if agent heading offgrid
+            Event lookAheadEvent = {EventType::AgentLookAhead, std::pair{&agent, agent.getLookAheadPos()}};
+            bus.publish(lookAheadEvent);
             Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getDesiredPos()}};
             bus.publish(event);
+            agent.setCurrentPosToDesired();
         };
     };
     void AgentController::draw(){
@@ -48,7 +52,7 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
-        agent->slowDown();
+        //agent->slowDown();
         //offGrid array is Top, Right, Bottom, Left
         //Either off Top or bottom, not both
         if (offGrid[0] == true){
@@ -64,8 +68,8 @@ namespace AutoCity {
         else if (offGrid[3] == true){
             agent->offLeftOfGrid();
         };
+        agent->setVelocity();
         agent->setDesired();
-        agent->setCurrentPosToDesired();
     };
     void AgentController::collisionHandler(const Event& e){
         //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>

@@ -38,5 +38,6 @@ namespace AutoCity {
             bool isAgentOnGrid(Agent *agent, sf::Vector2f agentPos);
             bool isAgentAlone(Agent *agent, sf::Vector2u agentGridPos);
             void sendFlowMap(Agent *agent, sf::Vector2u agentGridPos);
+            void agentLookAhead(const Event& e);
     };
 };

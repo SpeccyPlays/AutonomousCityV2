@@ -17,6 +17,7 @@ namespace AutoCity {
         TileSelected, //payload &tile
         TileAdded, //payload of std::pair<Tile, sf::Vector2i> tileInfo
         RemoveAgent, //std::pair<Agent*, sf::Vector2f>
+        AgentLookAhead, //pay std::pair<Agent*, sf::Vector2f>
         AgentUpdate, //pay std::pair<Agent*, sf::Vector2f>
         AgentOffGrid, //payload std::pair<Agent*, std::array>
         AgentCollision, //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
