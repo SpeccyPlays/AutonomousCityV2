@@ -11,11 +11,11 @@ namespace AutoCity {
         currentPos.y = windowSize.y / 2;
     };
     void Agent::init(){
-        maxspeed = 50;
+        maxspeed = 1.5f;
         wanderingDistance = 0.01f;
         agentState = AgentState::Wandering;
         velocity = {0.f, 0.f};
-        accelerationRate = maxspeed * 0.1f;
+        accelerationRate = 50 * 0.1f;//random value but never mind
         decelerationRate = 0.8f;
         currentSpeed = 0.f;
         rngSeed = std::mt19937(std::random_device{}());
@@ -32,15 +32,6 @@ namespace AutoCity {
     };
     void Agent::update(sf::Time delta){
         currentDeltaTime = delta.asSeconds();
-        accelerate();
-        setDesired();
-        if (CityObject::getDebug()){
-            std::array line = {
-                sf::Vertex{currentPos},
-                sf::Vertex{desiredPos}
-            };
-            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
-        };
     };
     void Agent::draw(){
         sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
@@ -110,6 +101,7 @@ namespace AutoCity {
         if (currentSpeed > maxspeed){
             currentSpeed = maxspeed;
         };
+        std::cout << "Current speed: " << currentSpeed << std::endl;
     };
     void Agent::slowDown(){
         //copied from previous version

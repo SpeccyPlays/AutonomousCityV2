@@ -23,7 +23,8 @@ namespace AutoCity {
         DesiredBoundaryCheckResponse, //payload std::pair<Agent*, std::array>
         AgentUpdate, //pay std::pair<Agent*, sf::Vector2f>
         AgentOffGrid, //payload std::pair<Agent*, std::array>
-        AgentCollision, //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
+        AgentCollisionCheck, //payload std::pair<Agent*, sf::Vector2f>,
+        AgentCollisionCheckResponse, //payload std::pair<Agent*, sf::Vector2fstd::unordered_set<AutoCity::Agent *>,
         RoadFlowMap, //payload std::pair<Agent*, std::vector<sf::Angle>     
         Error
     };

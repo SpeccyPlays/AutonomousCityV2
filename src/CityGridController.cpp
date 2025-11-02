@@ -24,6 +24,8 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
         bus.subscribe(AutoCity::EventType::RemoveAgent, [this](const Event& e) { removeAgent(e); });
         bus.subscribe(AutoCity::EventType::AgentLookAheadBoundaryCheck, [this](const Event& e) { agentLookAhead(e); });
+        bus.subscribe(AutoCity::EventType::AgentDesiredBoundaryCheck, [this](const Event& e) { agentDesiredBoundaryCheck(e); });
+        bus.subscribe(AutoCity::EventType::AgentCollisionCheck, [this](const Event& e) { sendOccupants(e); });
         bus.subscribe(AutoCity::EventType::AgentUpdate, [this](const Event& e) { agentUpdate(e); });
         bus.subscribe(AutoCity::EventType::DebugGrid, [this](const Event& e) { this->toggleDebug(); });
     };
@@ -133,14 +135,8 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
-        /*if (!isAgentOnGrid(agent, pos)){
-            return;
-        }*/
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
-        if (!isAgentAlone(agent, gridPos)){
-            return;
-        }
         sendFlowMap(agent, gridPos);
     };
     std::array<bool, 4> CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
@@ -160,13 +156,13 @@ namespace AutoCity {
         };
         return offGrid;     
     };
-    bool CityGridController::isAgentAlone(Agent *agent, sf::Vector2u agentGridPos){
-        if (grid[agentGridPos.y][agentGridPos.x].occupants.size() > 1){
-            Event event = {EventType::AgentCollision, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].occupants}};
-            bus.publish(event);
-            return false;
-        }
-        return true;
+    void CityGridController::sendOccupants(const Event& e){
+        auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
+        Agent* agent = agentInfo.first;
+        sf::Vector2f pos = agentInfo.second;
+        sf::Vector2u agentGridPos = pixelToGridPos(pos);
+        Event event = {EventType::AgentCollisionCheckResponse, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].occupants}};
+        bus.publish(event);
     };
     void CityGridController::sendFlowMap(Agent *agent, sf::Vector2u agentGridPos){
         Event event = {EventType::RoadFlowMap, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].tile.flowMap}};

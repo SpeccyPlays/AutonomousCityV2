@@ -14,7 +14,7 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleAllDebug(); });
         bus.subscribe(AutoCity::EventType::LookAheadResponse, [this](const Event& e) { this->handleLookAheadBoundryCheck(e); });
         bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { this->handleDesiredBoundryCheck(e); });
-        bus.subscribe(AutoCity::EventType::AgentCollision, [this](const Event& e) { this->collisionHandler(e); });
+        bus.subscribe(AutoCity::EventType::AgentCollisionCheckResponse, [this](const Event& e) { this->collisionHandler(e); });
         bus.subscribe(AutoCity::EventType::RoadFlowMap, [this](const Event& e) { this->roadFlowHandler(e); });
         
         for (auto& agentPtr : agents){
@@ -31,6 +31,7 @@ namespace AutoCity {
     void AgentController::update(sf::Time delta){
         for (auto& agentPtr : agents){
             Agent& agent = *agentPtr;
+            agent.update(delta); //just sets currentDeltaTime in agent
             //remove agent from current cell
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
@@ -39,9 +40,11 @@ namespace AutoCity {
             Event lookAheadEvent = {EventType::AgentLookAheadBoundaryCheck, std::pair{&agent, agent.getLookAheadPos()}};
             bus.publish(lookAheadEvent);
             Event desiredEvent = {EventType::AgentDesiredBoundaryCheck, std::pair{&agent, agent.getDesiredPos(delta)}};
+            bus.publish(desiredEvent);
+            Event collisionCheckEvent = {EventType::AgentCollisionCheck, std::pair{&agent, agent.getPos()}};
+            bus.publish(collisionCheckEvent);
             agent.setVelocity();
             agent.setDesired();
-            bus.publish(desiredEvent); 
             Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
             bus.publish(event);
             agent.setCurrentPosToDesired();

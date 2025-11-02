@@ -36,9 +36,9 @@ namespace AutoCity {
             void addAgent(Agent *agent, sf::Vector2u agentGridPos);
             void agentUpdate(const Event& e);
             std::array<bool, 4> isAgentOnGrid(Agent *agent, sf::Vector2f agentPos);
-            bool isAgentAlone(Agent *agent, sf::Vector2u agentGridPos);
             void sendFlowMap(Agent *agent, sf::Vector2u agentGridPos);
             void agentLookAhead(const Event& e);
             void agentDesiredBoundaryCheck(const Event& e);
+            void sendOccupants(const Event& e);
     };
 };
