@@ -15,7 +15,7 @@ namespace AutoCity {
         wanderingDistance = 0.01f;
         agentState = AgentState::Wandering;
         velocity = {0.f, 0.f};
-        accelerationRate = 50 * 0.1f;//random value but never mind
+        accelerationRate = maxspeed * 0.3f;//random value but never mind
         decelerationRate = 0.8f;
         currentSpeed = 0.f;
         rngSeed = std::mt19937(std::random_device{}());
@@ -23,9 +23,9 @@ namespace AutoCity {
         std::uniform_real_distribution<float> angleDist(0, 360);
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
-        AutoCity::TextureManager::getTexture("include/textures/car.png");
+        /*AutoCity::TextureManager::getTexture("include/textures/car.png");
         AutoCity::TextureManager::getTexture("include/textures/carboyracer.png");
-        AutoCity::TextureManager::getTexture("include/textures/caroldperson.png");
+        AutoCity::TextureManager::getTexture("include/textures/caroldperson.png");*/
     };
     void Agent::processEvents(const sf::Event& event){
 
@@ -101,7 +101,6 @@ namespace AutoCity {
         if (currentSpeed > maxspeed){
             currentSpeed = maxspeed;
         };
-        std::cout << "Current speed: " << currentSpeed << std::endl;
     };
     void Agent::slowDown(){
         //copied from previous version
