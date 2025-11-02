@@ -43,25 +43,27 @@ namespace AutoCity {
         };
     };
     void Agent::draw(){
-        /*sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
+        sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
         sf::Sprite sprite(tex);
         sf::Vector2f texSize = static_cast<sf::Vector2f>(tex.getSize());
         sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f});
         sprite.setPosition(currentPos);
         sprite.setRotation(sf::degrees(angle));
-        window.draw(sprite);*/
+        window.draw(sprite);
+        if (CityObject::getDebug()){
             std::array line = {
                 sf::Vertex{currentPos},
                 sf::Vertex{lookAheadPos}
             };
             window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        };        
     };
     sf::Vector2f Agent::getPos(){
         return currentPos;
     };
     sf::Vector2f Agent::getLookAheadPos(){
         float speed = currentSpeed;
-        speed += accelerationRate + maxspeed;
+        speed += accelerationRate * 10;
         sf::Vector2f tempVelocity({0, 0});
         double radians = angle * M_PI / 180.0;
         tempVelocity.x = std::cos(radians) * speed;
@@ -72,8 +74,11 @@ namespace AutoCity {
     };
     sf::Vector2f Agent::getDesiredPos(sf::Time delta){
         currentDeltaTime = delta.asSeconds();
-        float speed = currentSpeed + accelerationRate * currentDeltaTime;
-        speed += accelerationRate + maxspeed;
+        float speed = currentSpeed;
+        speed += accelerationRate * currentDeltaTime;
+        if (speed > maxspeed){
+            speed = maxspeed;
+        };
         sf::Vector2f tempVelocity({0, 0});
         double radians = angle * M_PI / 180.0;
         tempVelocity.x = std::cos(radians) * speed;
@@ -84,55 +89,20 @@ namespace AutoCity {
     sf::Vector2f Agent::getnextPos(){
         return desiredPos;
     }
-    //For the off grids, check velocities to work out which way to steer
-    //a negative x means agent going right to left, oppposite if positive
-    //a negative y means agents going bottom to top, oppposite if positive
-    void Agent::offTopOfGrid(){
-        if (velocity.x < 0){
-            steerLeft();
-        }
-        else {
-            steerRight();
-        }
-    };
-    void Agent::offBottomOfGrid(){
-        if (velocity.x < 0){
-            steerRight();
-        }
-        else {
-            steerLeft();
-            
-        }
-    };
-    void Agent::offLeftOfGrid(){
-        if (velocity.y < 0){
-            steerLeft();  
-        }
-        else {
-            steerRight();
-        }
-    };
-    void Agent::offRightOfGrid(){ 
-        if (velocity.y < 0){
-            steerLeft();
-        }
-        else {
-            steerRight();
-        }
+    sf::Vector2f Agent::getVelocity(){
+        return velocity;
     };
     void Agent::steerLeft(){
         //copied from previous version
         float steeringAmount = 5;
         angle -= steeringAmount;
         wrapAngle();
-        setVelocity();
     };
     void Agent::steerRight(){
         //copied from previous version
         float steeringAmount = 5;
         angle += steeringAmount;
         wrapAngle();
-        setVelocity();
     };
     void Agent::accelerate(){
         //copied from previous version
@@ -140,7 +110,6 @@ namespace AutoCity {
         if (currentSpeed > maxspeed){
             currentSpeed = maxspeed;
         };
-        setVelocity();
     };
     void Agent::slowDown(){
         //copied from previous version
@@ -148,7 +117,6 @@ namespace AutoCity {
         if (currentSpeed < 1){
             currentSpeed = 0.f;
         }
-        setVelocity();
     };
     void Agent::setVelocity(){
         //copied from previous version

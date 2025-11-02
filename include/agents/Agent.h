@@ -41,12 +41,9 @@ namespace AutoCity {
             sf::Vector2f getLookAheadPos();
             sf::Vector2f getDesiredPos(sf::Time delta);
             sf::Vector2f getnextPos();
+            sf::Vector2f getVelocity();
             void slowDown();
             void setDesired();
-            void offTopOfGrid();
-            void offBottomOfGrid();
-            void offLeftOfGrid();
-            void offRightOfGrid();
             void setVelocity();
             void setCurrentPosToDesired();
             void steerLeft();

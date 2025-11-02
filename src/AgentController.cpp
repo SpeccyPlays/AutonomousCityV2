@@ -35,11 +35,13 @@ namespace AutoCity {
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
             //Check further ahead to see if agent heading offgrid
+            agent.accelerate();
             Event lookAheadEvent = {EventType::AgentLookAheadBoundaryCheck, std::pair{&agent, agent.getLookAheadPos()}};
             bus.publish(lookAheadEvent);
             Event desiredEvent = {EventType::AgentDesiredBoundaryCheck, std::pair{&agent, agent.getDesiredPos(delta)}};
-            bus.publish(desiredEvent);
-            agent.update(delta);
+            agent.setVelocity();
+            agent.setDesired();
+            bus.publish(desiredEvent); 
             Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
             bus.publish(event);
             agent.setCurrentPosToDesired();
@@ -68,27 +70,48 @@ namespace AutoCity {
         if (offCount > 0){
             agent->slowDown();
             offGridHandler(agent, offGrid);
-        };
+        }
     };
     void AgentController::offGridHandler(Agent* agent, std::array<bool, 4> offGrid){
-        //agent->slowDown();
         //offGrid array is Top, Right, Bottom, Left
-        //Either off Top or bottom, not both
+        //For the off grids, check velocities to work out which way to steer
+        //a negative x means agent going right to left, oppposite if positive
+        //a negative y means agents going bottom to top, oppposite if positive
+        sf::Vector2f velocity = agent->getVelocity();
         if (offGrid[0] == true){
-            agent->offTopOfGrid();
+            if (velocity.x < 0){
+                agent->steerLeft();
+            }
+            else {
+                agent->steerRight();
+            };
         }
         else if (offGrid[2] == true){
-            agent->offBottomOfGrid();
+            if (velocity.x < 0){
+                agent->steerRight();
+            }
+            else {
+                agent->steerLeft();
+                
+            };
         };
         //either off right or left, not both
         if (offGrid[1] == true){
-            agent->offRightOfGrid();
+            if (velocity.y < 0){
+                agent->steerLeft();
+            }
+            else {
+                agent->steerRight();
+            };
         }
         else if (offGrid[3] == true){
-            agent->offLeftOfGrid();
+            if (velocity.y < 0){
+                agent->steerRight(); 
+            }
+            else {
+                agent->steerLeft();
+            };
         };
-        agent->setVelocity();
-        agent->setDesired();
     };
     void AgentController::collisionHandler(const Event& e){
         //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
