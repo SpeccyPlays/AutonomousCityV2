@@ -6,9 +6,11 @@
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
-        std::unique_ptr<AutoCity::Agent> agent;
-        agent = std::make_unique<AutoCity::Agent>(window, bus);
-        agents.emplace_back(std::move(agent));
+        for (int i = 0; i < 10; i++){
+            std::unique_ptr<AutoCity::Agent> agent;
+            agent = std::make_unique<AutoCity::Agent>(window, bus);
+            agents.emplace_back(std::move(agent));
+        }
     };
     void AgentController::init(){
         bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleAllDebug(); });

@@ -15,7 +15,7 @@ namespace AutoCity {
         wanderingDistance = 0.01f;
         agentState = AgentState::Wandering;
         velocity = {0.f, 0.f};
-        accelerationRate = maxspeed * 0.3f;//random value but never mind
+        accelerationRate = 5.f;//random value but never mind
         decelerationRate = 0.8f;
         currentSpeed = 0.f;
         rngSeed = std::mt19937(std::random_device{}());

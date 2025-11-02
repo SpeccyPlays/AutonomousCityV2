@@ -83,7 +83,11 @@ namespace AutoCity {
                 if (CityObject::getDebug() && grid[i][j].occupants.size() > 0){
                     sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
                     sf::RectangleShape square(sf::Vector2f(AutoCity::TileManager::tileSize.x, AutoCity::TileManager::tileSize.y));
-                    square.setFillColor(sf::Color(255, 0, 0, 128));
+                    int amountOfRed = 128 + grid[i][j].occupants.size() * 10;
+                    if (amountOfRed > 255){
+                        amountOfRed = 255;
+                    }
+                    square.setFillColor(sf::Color(255, 0, 0, amountOfRed));
                     square.setPosition(drawPos);
                     window.draw(square);
                 };
@@ -125,6 +129,7 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
+        pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         grid[gridPos.y][gridPos.x].occupants.erase(agent);
     };
@@ -135,6 +140,7 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
+        pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
         sendFlowMap(agent, gridPos);
