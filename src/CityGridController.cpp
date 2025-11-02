@@ -23,7 +23,7 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
         bus.subscribe(AutoCity::EventType::RemoveAgent, [this](const Event& e) { removeAgent(e); });
-        bus.subscribe(AutoCity::EventType::AgentLookAhead, [this](const Event& e) { agentLookAhead(e); });
+        bus.subscribe(AutoCity::EventType::AgentLookAheadBoundaryCheck, [this](const Event& e) { agentLookAhead(e); });
         bus.subscribe(AutoCity::EventType::AgentUpdate, [this](const Event& e) { agentUpdate(e); });
         bus.subscribe(AutoCity::EventType::DebugGrid, [this](const Event& e) { this->toggleDebug(); });
     };
@@ -123,9 +123,6 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
-        if (!isAgentOnGrid(agent, pos)){
-            return;
-        }
         sf::Vector2u gridPos = pixelToGridPos(pos);
         grid[gridPos.y][gridPos.x].occupants.erase(agent);
     };
@@ -136,9 +133,9 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
-        if (!isAgentOnGrid(agent, pos)){
+        /*if (!isAgentOnGrid(agent, pos)){
             return;
-        }
+        }*/
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
         if (!isAgentAlone(agent, gridPos)){
@@ -146,7 +143,7 @@ namespace AutoCity {
         }
         sendFlowMap(agent, gridPos);
     };
-    bool CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
+    std::array<bool, 4> CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
         //offGrid array is Top, Right, Bottom, Left
         std::array<bool, 4> offGrid = {false, false, false, false};
         if (agentPos.y < gridStart.y){
@@ -161,13 +158,7 @@ namespace AutoCity {
         if (agentPos.x < gridStart.x){
             offGrid[3] = true;
         };
-        int offCount = std::count(offGrid.begin(), offGrid.end(), true);
-        if (offCount > 0){
-            Event event = {EventType::AgentOffGrid, std::pair{agent, offGrid}};
-            bus.publish(event);
-            return false;
-        }
-        return true;        
+        return offGrid;     
     };
     bool CityGridController::isAgentAlone(Agent *agent, sf::Vector2u agentGridPos){
         if (grid[agentGridPos.y][agentGridPos.x].occupants.size() > 1){
@@ -180,28 +171,25 @@ namespace AutoCity {
     void CityGridController::sendFlowMap(Agent *agent, sf::Vector2u agentGridPos){
         Event event = {EventType::RoadFlowMap, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].tile.flowMap}};
         bus.publish(event);
-    }
+    };
     void CityGridController::agentLookAhead(const Event& e){
         //Receives lookahead value from agentcontroller to see if agent is heading off grid
         //offGrid array is Top, Right, Bottom, Left
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f agentPos = agentInfo.second;
-        std::array<bool, 4> offGrid = {false, false, false, false};
-        if (agentPos.y < gridStart.y){
-            offGrid[0] = true;
-        };
-        if (agentPos.x > gridEnd.x){
-            offGrid[1] = true;
-        };
-        if (agentPos.y > gridEnd.y){
-            offGrid[2] = true;
-        };
-        if (agentPos.x < gridStart.x){
-            offGrid[3] = true;
-        };
-        int offCount = std::count(offGrid.begin(), offGrid.end(), true);
-        Event event = {EventType::AgentOffGrid, std::pair{agent, offGrid}};
+        std::array<bool, 4> offGrid = isAgentOnGrid(agent, agentPos);
+        Event event = {EventType::LookAheadResponse, std::pair{agent, offGrid}};
         bus.publish(event);
-    }
+    };
+    void CityGridController::agentDesiredBoundaryCheck(const Event& e){
+        //Receives lookahead value from agentcontroller to see if agent is heading off grid
+        //offGrid array is Top, Right, Bottom, Left
+        auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
+        Agent* agent = agentInfo.first;
+        sf::Vector2f agentPos = agentInfo.second;
+        std::array<bool, 4> offGrid = isAgentOnGrid(agent, agentPos);
+        Event event = {EventType::DesiredBoundaryCheckResponse, std::pair{agent, offGrid}};
+        bus.publish(event);
+    };
 };

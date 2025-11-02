@@ -7,10 +7,12 @@ namespace AutoCity {
     class AgentController : public CityObject{
         private:
             std::vector<std::unique_ptr<AutoCity::Agent>> agents;
-            void offGridHandler(const Event& e);
+            void offGridHandler(Agent* agent, std::array<bool, 4> offGrid);
             void collisionHandler(const Event& e);
             void roadFlowHandler(const Event& e);
             void toggleAllDebug();
+            void handleLookAheadBoundryCheck(const Event& e);
+            void handleDesiredBoundryCheck(const Event& e);
         public:
             AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

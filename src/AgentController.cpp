@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <array>
+#include <algorithm>
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
@@ -11,7 +12,8 @@ namespace AutoCity {
     };
     void AgentController::init(){
         bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleAllDebug(); });
-        bus.subscribe(AutoCity::EventType::AgentOffGrid, [this](const Event& e) { this->offGridHandler(e); });
+        bus.subscribe(AutoCity::EventType::LookAheadResponse, [this](const Event& e) { this->handleLookAheadBoundryCheck(e); });
+        bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { this->handleDesiredBoundryCheck(e); });
         bus.subscribe(AutoCity::EventType::AgentCollision, [this](const Event& e) { this->collisionHandler(e); });
         bus.subscribe(AutoCity::EventType::RoadFlowMap, [this](const Event& e) { this->roadFlowHandler(e); });
         
@@ -32,11 +34,13 @@ namespace AutoCity {
             //remove agent from current cell
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
-            agent.update(delta);
             //Check further ahead to see if agent heading offgrid
-            Event lookAheadEvent = {EventType::AgentLookAhead, std::pair{&agent, agent.getLookAheadPos()}};
+            Event lookAheadEvent = {EventType::AgentLookAheadBoundaryCheck, std::pair{&agent, agent.getLookAheadPos()}};
             bus.publish(lookAheadEvent);
-            Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getDesiredPos()}};
+            Event desiredEvent = {EventType::AgentDesiredBoundaryCheck, std::pair{&agent, agent.getDesiredPos(delta)}};
+            bus.publish(desiredEvent);
+            agent.update(delta);
+            Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
             bus.publish(event);
             agent.setCurrentPosToDesired();
         };
@@ -47,11 +51,26 @@ namespace AutoCity {
             agent.draw();
         }
     };
-    void AgentController::offGridHandler(const Event& e){
-        //payload std::pair<Agent*, std::array>
+    void AgentController::handleLookAheadBoundryCheck(const Event& e){
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
+        int offCount = std::count(offGrid.begin(), offGrid.end(), true);
+        if (offCount > 0){
+            offGridHandler(agent, offGrid);
+        };
+    };
+    void AgentController::handleDesiredBoundryCheck(const Event& e){
+        const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
+        Agent* agent = payload.first;
+        const std::array<bool, 4>& offGrid = payload.second;
+        int offCount = std::count(offGrid.begin(), offGrid.end(), true);
+        if (offCount > 0){
+            agent->slowDown();
+            offGridHandler(agent, offGrid);
+        };
+    };
+    void AgentController::offGridHandler(Agent* agent, std::array<bool, 4> offGrid){
         //agent->slowDown();
         //offGrid array is Top, Right, Bottom, Left
         //Either off Top or bottom, not both

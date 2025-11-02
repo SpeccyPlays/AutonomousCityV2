@@ -14,6 +14,7 @@ namespace AutoCity {
             sf::Vector2f velocity;
             sf::Vector2f acceleration;
             sf::Vector2f desiredPos;
+            sf::Vector2f lookAheadPos;
             float currentDeltaTime;
             float angle;
             float maxspeed;
@@ -28,9 +29,6 @@ namespace AutoCity {
             std::uniform_real_distribution<float> wanderDist;
             std::uniform_real_distribution<float> randomAngle;
         private:
-            void steerLeft();
-            void steerRight();
-            void accelerate();
             
             void wrapAngle();
         public:
@@ -41,7 +39,8 @@ namespace AutoCity {
             void draw() override;
             sf::Vector2f getPos();
             sf::Vector2f getLookAheadPos();
-            sf::Vector2f getDesiredPos();
+            sf::Vector2f getDesiredPos(sf::Time delta);
+            sf::Vector2f getnextPos();
             void slowDown();
             void setDesired();
             void offTopOfGrid();
@@ -50,5 +49,8 @@ namespace AutoCity {
             void offRightOfGrid();
             void setVelocity();
             void setCurrentPosToDesired();
+            void steerLeft();
+            void steerRight();
+            void accelerate();
         };
 };

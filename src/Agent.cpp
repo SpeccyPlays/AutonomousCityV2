@@ -43,40 +43,51 @@ namespace AutoCity {
         };
     };
     void Agent::draw(){
-        sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
+        /*sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
         sf::Sprite sprite(tex);
         sf::Vector2f texSize = static_cast<sf::Vector2f>(tex.getSize());
         sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f});
         sprite.setPosition(currentPos);
         sprite.setRotation(sf::degrees(angle));
-        window.draw(sprite);
+        window.draw(sprite);*/
+            std::array line = {
+                sf::Vertex{currentPos},
+                sf::Vertex{lookAheadPos}
+            };
+            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
     };
     sf::Vector2f Agent::getPos(){
         return currentPos;
     };
     sf::Vector2f Agent::getLookAheadPos(){
         float speed = currentSpeed;
-        speed += accelerationRate;
+        speed += accelerationRate + maxspeed;
         sf::Vector2f tempVelocity({0, 0});
         double radians = angle * M_PI / 180.0;
         tempVelocity.x = std::cos(radians) * speed;
         tempVelocity.y = std::sin(radians) * speed;
-        sf::Vector2f lookAheadPos = currentPos + tempVelocity;
-            std::array line = {
-                sf::Vertex{currentPos},
-                sf::Vertex{lookAheadPos}
-            };
-            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+        sf::Vector2f tempLookAheadPos = currentPos + tempVelocity;
+        lookAheadPos = tempLookAheadPos;
         return lookAheadPos;
     };
-    sf::Vector2f Agent::getDesiredPos(){
-        return desiredPos;
+    sf::Vector2f Agent::getDesiredPos(sf::Time delta){
+        currentDeltaTime = delta.asSeconds();
+        float speed = currentSpeed + accelerationRate * currentDeltaTime;
+        speed += accelerationRate + maxspeed;
+        sf::Vector2f tempVelocity({0, 0});
+        double radians = angle * M_PI / 180.0;
+        tempVelocity.x = std::cos(radians) * speed;
+        tempVelocity.y = std::sin(radians) * speed;
+        sf::Vector2f tempDesiredPos = currentPos + tempVelocity;
+        return tempDesiredPos;
     };
+    sf::Vector2f Agent::getnextPos(){
+        return desiredPos;
+    }
     //For the off grids, check velocities to work out which way to steer
     //a negative x means agent going right to left, oppposite if positive
     //a negative y means agents going bottom to top, oppposite if positive
     void Agent::offTopOfGrid(){
-        slowDown();
         if (velocity.x < 0){
             steerLeft();
         }
@@ -85,25 +96,23 @@ namespace AutoCity {
         }
     };
     void Agent::offBottomOfGrid(){
-        slowDown();
         if (velocity.x < 0){
-            steerLeft();
+            steerRight();
         }
         else {
-            steerRight();
+            steerLeft();
+            
         }
     };
     void Agent::offLeftOfGrid(){
-        slowDown();
         if (velocity.y < 0){
-            steerLeft();
+            steerLeft();  
         }
         else {
             steerRight();
         }
     };
-    void Agent::offRightOfGrid(){
-        slowDown();
+    void Agent::offRightOfGrid(){ 
         if (velocity.y < 0){
             steerLeft();
         }
