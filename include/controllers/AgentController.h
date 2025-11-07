@@ -13,6 +13,7 @@ namespace AutoCity {
             void toggleAllDebug();
             void handleLookAheadBoundryCheck(const Event& e);
             void handleDesiredBoundryCheck(const Event& e);
+            void tileHandler(const Event& e);
         public:
             AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

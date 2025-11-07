@@ -143,7 +143,7 @@ namespace AutoCity {
         pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
-        sendFlowMap(agent, gridPos);
+        sendTileForAgent(agent, gridPos);
     };
     std::array<bool, 4> CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
         //offGrid array is Top, Right, Bottom, Left
@@ -170,8 +170,8 @@ namespace AutoCity {
         Event event = {EventType::AgentCollisionCheckResponse, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].occupants}};
         bus.publish(event);
     };
-    void CityGridController::sendFlowMap(Agent *agent, sf::Vector2u agentGridPos){
-        Event event = {EventType::RoadFlowMap, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].tile.flowMap}};
+    void CityGridController::sendTileForAgent(Agent *agent, sf::Vector2u agentGridPos){
+        Event event = {EventType::AgentTile, std::pair{agent, grid[agentGridPos.y][agentGridPos.x].tile}};
         bus.publish(event);
     };
     void CityGridController::agentLookAhead(const Event& e){

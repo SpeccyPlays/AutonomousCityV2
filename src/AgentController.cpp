@@ -1,4 +1,5 @@
 #include "../include/controllers/AgentController.h"
+#include "../include/CityGrid/TileManager.h"
 #include <iostream>
 #include <unordered_set>
 #include <array>
@@ -6,7 +7,7 @@
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 1; i++){
             std::unique_ptr<AutoCity::Agent> agent;
             agent = std::make_unique<AutoCity::Agent>(window, bus);
             agents.emplace_back(std::move(agent));
@@ -17,7 +18,7 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::LookAheadResponse, [this](const Event& e) { this->handleLookAheadBoundryCheck(e); });
         bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { this->handleDesiredBoundryCheck(e); });
         bus.subscribe(AutoCity::EventType::AgentCollisionCheckResponse, [this](const Event& e) { this->collisionHandler(e); });
-        bus.subscribe(AutoCity::EventType::RoadFlowMap, [this](const Event& e) { this->roadFlowHandler(e); });
+        bus.subscribe(AutoCity::EventType::AgentTile, [this](const Event& e) { this->tileHandler(e); });
         
         for (auto& agentPtr : agents){
             Agent& agent = *agentPtr;
@@ -47,8 +48,8 @@ namespace AutoCity {
             bus.publish(collisionCheckEvent);
             agent.setVelocity();
             agent.setDesired();
-            Event event = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
-            bus.publish(event);
+            Event upDateEvent = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
+            bus.publish(upDateEvent);
             agent.setCurrentPosToDesired();
         };
     };
@@ -124,12 +125,45 @@ namespace AutoCity {
         Agent* agent = payload.first;
         const std::unordered_set<AutoCity::Agent*>& occupants = payload.second;
     };
-    void AgentController::roadFlowHandler(const Event& e){
+    void AgentController::tileHandler(const Event& e){
         //payload std::pair<Agent*, std::vector<sf::Angle>
-        const auto& payload = std::any_cast<std::pair<Agent*, std::vector<sf::Angle>>>(e.payload);
+        const auto& payload = std::any_cast<std::pair<Agent*, Tile>>(e.payload);
         Agent* agent = payload.first;
-        std::vector<sf::Angle> flowMap = payload.second;
-        agent->setCurrentPosToDesired();
+        Tile tile = payload.second;
+        //work out where we are in the tile
+        sf::Vector2f agentNextPos = agent->getnextPos();
+        //get the remainder to find out cellPos
+        float xPos = fmod(agentNextPos.x, AutoCity::TileManager::tileSize.x);
+        float yPos = fmod(agentNextPos.y, AutoCity::TileManager::tileSize.y);
+        float flowAngle = 0;
+        /* Comment out for testing, but if next tile is not a road, u-turn
+        if (tile.type != TileType::Road){
+            agent->slowDown();
+            agent->steerRight();
+        }*/
+       int cellPos = 0;
+        if (xPos < AutoCity::TileManager::tileSize.x / 2 && yPos < AutoCity::TileManager::tileSize.y / 2){
+            //Top left, first in flowmap
+            flowAngle = tile.flowMap[0].asDegrees();
+        }
+        else if (xPos > AutoCity::TileManager::tileSize.x / 2 && yPos < AutoCity::TileManager::tileSize.y / 2){
+            //top right, second in flowmap
+            cellPos = 1;
+            flowAngle = tile.flowMap[1].asDegrees();
+        }
+        else if (xPos > AutoCity::TileManager::tileSize.x / 2 && yPos > AutoCity::TileManager::tileSize.y / 2){
+            //bottom right, third in flowmap
+            cellPos = 2;
+            flowAngle = tile.flowMap[2].asDegrees();
+        }
+        else if (xPos < AutoCity::TileManager::tileSize.x / 2 && yPos < AutoCity::TileManager::tileSize.y / 2){
+            //bottom left, fouth in flowmap
+            cellPos = 3;
+            flowAngle = tile.flowMap[3].asDegrees();
+        }
+        std::cout << "Cell pos X: " << xPos << " Y: " << yPos << std::endl;
+        std::cout << "Cell pos : " << cellPos << std::endl;
+        std::cout << "Flow angle: " << flowAngle << std::endl;
     };
     void AgentController::toggleAllDebug(){
         for (auto& agentPtr : agents){

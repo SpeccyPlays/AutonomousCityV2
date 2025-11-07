@@ -25,7 +25,7 @@ namespace AutoCity {
         AgentOffGrid, //payload std::pair<Agent*, std::array>
         AgentCollisionCheck, //payload std::pair<Agent*, sf::Vector2f>,
         AgentCollisionCheckResponse, //payload std::pair<Agent*, sf::Vector2fstd::unordered_set<AutoCity::Agent *>,
-        RoadFlowMap, //payload std::pair<Agent*, std::vector<sf::Angle>     
+        AgentTile, //pay std::pair<Agent*, tile
         Error
     };
     struct Event {
