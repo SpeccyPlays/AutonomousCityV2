@@ -28,6 +28,7 @@ namespace AutoCity {
             std::mt19937 rngSeed;
             std::uniform_real_distribution<float> wanderDist;
             std::uniform_real_distribution<float> randomAngle;
+            bool offGrid;
         private:
             
             void wrapAngle();
@@ -42,6 +43,7 @@ namespace AutoCity {
             sf::Vector2f getDesiredPos(sf::Time delta);
             sf::Vector2f getnextPos();
             sf::Vector2f getVelocity();
+            float getAngle();
             void slowDown();
             void setDesired();
             void setVelocity();
@@ -49,5 +51,7 @@ namespace AutoCity {
             void steerLeft();
             void steerRight();
             void accelerate();
+            void setOffGrid(bool isOffGrid);
+            bool getOffGrid();
         };
 };

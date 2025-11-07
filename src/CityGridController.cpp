@@ -143,7 +143,9 @@ namespace AutoCity {
         pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
-        sendTileForAgent(agent, gridPos);
+        if (!agent->getOffGrid()){
+            sendTileForAgent(agent, gridPos);
+        };        
     };
     std::array<bool, 4> CityGridController::isAgentOnGrid(Agent *agent, sf::Vector2f agentPos){
         //offGrid array is Top, Right, Bottom, Left

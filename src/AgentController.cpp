@@ -38,14 +38,18 @@ namespace AutoCity {
             //remove agent from current cell
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
+            //set off grid to false by default
+            agent.setOffGrid(false);
             //Check further ahead to see if agent heading offgrid
             agent.accelerate();
             Event lookAheadEvent = {EventType::AgentLookAheadBoundaryCheck, std::pair{&agent, agent.getLookAheadPos()}};
             bus.publish(lookAheadEvent);
             Event desiredEvent = {EventType::AgentDesiredBoundaryCheck, std::pair{&agent, agent.getDesiredPos(delta)}};
             bus.publish(desiredEvent);
-            Event collisionCheckEvent = {EventType::AgentCollisionCheck, std::pair{&agent, agent.getPos()}};
-            bus.publish(collisionCheckEvent);
+            if (!agent.getOffGrid()){
+                Event collisionCheckEvent = {EventType::AgentCollisionCheck, std::pair{&agent, agent.getPos()}};
+                bus.publish(collisionCheckEvent);
+            };            
             agent.setVelocity();
             agent.setDesired();
             Event upDateEvent = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};
@@ -65,6 +69,7 @@ namespace AutoCity {
         const std::array<bool, 4>& offGrid = payload.second;
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
+            agent->setOffGrid(true);
             offGridHandler(agent, offGrid);
         };
     };
@@ -74,6 +79,7 @@ namespace AutoCity {
         const std::array<bool, 4>& offGrid = payload.second;
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
+            agent->setOffGrid(true);
             agent->slowDown();
             offGridHandler(agent, offGrid);
         }
@@ -164,6 +170,7 @@ namespace AutoCity {
         std::cout << "Cell pos X: " << xPos << " Y: " << yPos << std::endl;
         std::cout << "Cell pos : " << cellPos << std::endl;
         std::cout << "Flow angle: " << flowAngle << std::endl;
+        std::cout << "Agent angle: " << agent->getAngle() << std::endl;
     };
     void AgentController::toggleAllDebug(){
         for (auto& agentPtr : agents){

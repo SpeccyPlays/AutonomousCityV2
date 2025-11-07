@@ -23,6 +23,7 @@ namespace AutoCity {
         std::uniform_real_distribution<float> angleDist(0, 360);
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
+        offGrid = false;
         /*AutoCity::TextureManager::getTexture("include/textures/car.png");
         AutoCity::TextureManager::getTexture("include/textures/carboyracer.png");
         AutoCity::TextureManager::getTexture("include/textures/caroldperson.png");*/
@@ -83,6 +84,9 @@ namespace AutoCity {
     sf::Vector2f Agent::getVelocity(){
         return velocity;
     };
+    float Agent::getAngle(){
+        return angle;
+    };
     void Agent::steerLeft(){
         //copied from previous version
         float steeringAmount = 5;
@@ -128,5 +132,11 @@ namespace AutoCity {
         if (angle < 0) {
             angle += 360.0f; // ensure it's positive
         }
+    };
+    void Agent::setOffGrid(bool isOffGrid){
+        offGrid = isOffGrid;
+    };
+    bool Agent::getOffGrid(){
+        return offGrid;
     }
 };
