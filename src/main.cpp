@@ -22,11 +22,10 @@ int main() {
     AutoCity::TextureManager texManager;
     AutoCity::EventBus cityEvents;
     AutoCity::TileManager tileManager;
-    const std::string roadTexures= "include/textures/RoadsTextures.png";
     AutoCity::CityObjectController cityController(window, cityEvents);
     cityController.init();
     tileManager.setEventBus(cityEvents);
-    tileManager.setBasicTiles(texManager.getTexture(roadTexures));
+    tileManager.setBasicTiles(texManager);
 
     sf::Clock deltaClock;
     //set all menu backgrounds so not blended

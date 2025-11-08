@@ -9,7 +9,7 @@ namespace AutoCity {
     void TileManager::setEventBus(EventBus& bus){
         eventBus = &bus;
     }
-    void TileManager::setBasicTiles(sf::Texture& tex){
+    void TileManager::setBasicTiles(AutoCity::TextureManager& texManager){
         //create a default tile and add it
         sf::Vector2u defaultDimensions(tileSize);
         sf::Texture defaultTexture(defaultDimensions);
@@ -21,7 +21,7 @@ namespace AutoCity {
         Tile defaultTile = {TileType::Default, TileSubType::NoFlow, sprite, origin, {angle, angle, angle, angle}, angle};
         tiles[TileType::Default].emplace(TileSubType::NoFlow, defaultTile);
         
-        sf::Texture& texture = tex;
+        //sf::Texture& texture = tex;
         sf::Angle north = sf::degrees(270);
         sf::Angle south = sf::degrees(90);
         sf::Angle east = sf::degrees(0);
@@ -33,7 +33,8 @@ namespace AutoCity {
             Bottom right is third value
             Bottom left is last value
        */
-        sf::Sprite roadStraightSprite(texture, sf::IntRect({0, 0}, {tileSize.x, tileSize.y}));
+        sf::Texture& roadStraightTex = texManager.getTexture("include/textures/roadstraight.png");
+        sf::Sprite roadStraightSprite(roadStraightTex);
         Tile roadStraight = {
             TileType::Road, 
             TileSubType::Straight, 
@@ -44,7 +45,8 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::Straight, roadStraight); //add like this or it goes boom
 
-        sf::Sprite leftTurnSprite(texture, sf::IntRect({tileSize.x, 0}, {tileSize.x, tileSize.y}));
+        sf::Texture& leftTurnTex = texManager.getTexture("include/textures/leftturn.png");
+        sf::Sprite leftTurnSprite(leftTurnTex);
         Tile leftTurn = {
             TileType::Road, 
             TileSubType::LeftTurn, 
@@ -55,7 +57,8 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::LeftTurn, leftTurn);
 
-        sf::Sprite rightTurnSprite(texture, sf::IntRect({tileSize.x * 2, 0}, {tileSize.x, tileSize.y}));
+        sf::Texture& rightTurnTex = texManager.getTexture("include/textures/rightturn.png");
+        sf::Sprite rightTurnSprite(rightTurnTex);
         Tile rightTurn = {
             TileType::Road, 
             TileSubType::RightTurn, 
@@ -66,7 +69,8 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::RightTurn, rightTurn);
 
-        sf::Sprite tJuncSprite(texture, sf::IntRect({tileSize.x * 3, 0}, {tileSize.x, tileSize.y}));
+        sf::Texture& tJuncTex = texManager.getTexture("include/textures/tjunc.png");
+        sf::Sprite tJuncSprite(tJuncTex);
         Tile tJunction = {
             TileType::Road, 
             TileSubType::TJunction, 
@@ -77,7 +81,8 @@ namespace AutoCity {
         };
         tiles[TileType::Road].emplace(TileSubType::TJunction, tJunction);
 
-        sf::Sprite deadEndSprite(texture, sf::IntRect({tileSize.x * 4, 0}, {tileSize.x, tileSize.y}));
+        sf::Texture& deadEndTex = texManager.getTexture("include/textures/deadend.png");
+        sf::Sprite deadEndSprite(deadEndTex);
         Tile deadEnd = {
             TileType::Road, 
             TileSubType::DeadEnd, 
