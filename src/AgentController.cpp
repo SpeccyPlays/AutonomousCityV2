@@ -1,5 +1,4 @@
 #include "../include/controllers/AgentController.h"
-#include "../include/CityGrid/TileManager.h"
 #include <iostream>
 #include <unordered_set>
 #include <array>
@@ -69,7 +68,6 @@ namespace AutoCity {
         const std::array<bool, 4>& offGrid = payload.second;
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
-            agent->setOffGrid(true);
             offGridHandler(agent, offGrid);
         };
     };
@@ -138,16 +136,27 @@ namespace AutoCity {
         Tile tile = payload.second;
         //work out where we are in the tile
         sf::Vector2f agentNextPos = agent->getnextPos();
-        //get the remainder to find out cellPos
-        float xPos = fmod(agentNextPos.x, AutoCity::TileManager::tileSize.x);
-        float yPos = fmod(agentNextPos.y, AutoCity::TileManager::tileSize.y);
-        float flowAngle = 0;
-        /* Comment out for testing, but if next tile is not a road, u-turn
-        if (tile.type != TileType::Road){
-            agent->slowDown();
+        if (tile.type == TileType::Default){
+            //agent->slowDown();
             agent->steerRight();
-        }*/
-       int cellPos = 0;
+        }
+        else {
+            float tileFlowAngle = getTileFlowAngle(tile, agentNextPos);
+            tileAngleActions(agent, tileFlowAngle);
+        };   
+    };
+    void AgentController::toggleAllDebug(){
+        for (auto& agentPtr : agents){
+            Agent& agent = *agentPtr;
+            agent.toggleDebug();
+        }
+    };
+    float AgentController::getTileFlowAngle(Tile tile, sf::Vector2f pos){
+        float xPos = fmod(pos.x, AutoCity::TileManager::tileSize.x);
+        float yPos = fmod(pos.y, AutoCity::TileManager::tileSize.y);
+        float flowAngle = 0;
+        //get the remainder to find out cellPos
+        int cellPos = 0;
         if (xPos < AutoCity::TileManager::tileSize.x / 2 && yPos < AutoCity::TileManager::tileSize.y / 2){
             //Top left, first in flowmap
             flowAngle = tile.flowMap[0].asDegrees();
@@ -162,20 +171,36 @@ namespace AutoCity {
             cellPos = 2;
             flowAngle = tile.flowMap[2].asDegrees();
         }
-        else if (xPos < AutoCity::TileManager::tileSize.x / 2 && yPos < AutoCity::TileManager::tileSize.y / 2){
+        else if (xPos < AutoCity::TileManager::tileSize.x / 2 && yPos > AutoCity::TileManager::tileSize.y / 2){
             //bottom left, fouth in flowmap
             cellPos = 3;
             flowAngle = tile.flowMap[3].asDegrees();
-        }
-        std::cout << "Cell pos X: " << xPos << " Y: " << yPos << std::endl;
-        std::cout << "Cell pos : " << cellPos << std::endl;
-        std::cout << "Flow angle: " << flowAngle << std::endl;
-        std::cout << "Agent angle: " << agent->getAngle() << std::endl;
+        };
+        return flowAngle;
     };
-    void AgentController::toggleAllDebug(){
-        for (auto& agentPtr : agents){
-            Agent& agent = *agentPtr;
-            agent.toggleDebug();
+    void AgentController::tileAngleActions(Agent* agent, float tileAngle){
+        float allowedDifference = 15.f;
+        float agentAngle = agent->getAngle();
+        float angleDiff = tileAngle - agentAngle;
+        float allowedLeft = tileAngle - allowedDifference;//wrapAngle(tileAngle - allowedDifference);
+        float allowedRight = tileAngle + allowedDifference;//wrapAngle(tileAngle + allowedDifference);
+        //std::cout << "Agent angle: " << agentAngle << " Angle diff: "<< angleDiff <<  " Allowed left angle: " << allowedLeft << " Allowed right: " << allowedRight << std::endl;
+        if (angleDiff < allowedLeft){
+            std::cout << "Agent steered left" << std::endl;
+            agent->slowDown();
+            agent->steerRight();
         }
+        if (angleDiff > allowedRight){
+            std::cout << "Agent steered right" << std::endl;
+            agent->slowDown(); 
+            agent->steerLeft();
+        }
+    };
+    float AgentController::wrapAngle(float angle){
+        angle = std::fmod(angle, 360.0f); // get remainder after division by 360
+        if (angle < 0) {
+            angle += 360.0f; // ensure it's positive
+        };
+        return angle;
     };
 };

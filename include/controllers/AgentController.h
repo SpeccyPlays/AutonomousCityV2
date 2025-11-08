@@ -2,6 +2,7 @@
 
 #include "../objects/CityObject.h"
 #include "../include/agents/Agent.h"
+#include "../include/CityGrid/TileManager.h"
 
 namespace AutoCity {
     class AgentController : public CityObject{
@@ -14,6 +15,9 @@ namespace AutoCity {
             void handleLookAheadBoundryCheck(const Event& e);
             void handleDesiredBoundryCheck(const Event& e);
             void tileHandler(const Event& e);
+            float getTileFlowAngle(Tile tile, sf::Vector2f pos);
+            void tileAngleActions(Agent* agent, float tileAngle);
+            float wrapAngle(float angle);
         public:
             AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

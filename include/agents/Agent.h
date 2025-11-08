@@ -30,7 +30,6 @@ namespace AutoCity {
             std::uniform_real_distribution<float> randomAngle;
             bool offGrid;
         private:
-            
             void wrapAngle();
         public:
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);

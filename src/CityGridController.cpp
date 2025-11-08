@@ -75,13 +75,14 @@ namespace AutoCity {
             for (int j = 0; j < grid[i].size(); j++){
                 Tile tile = grid[i][j].tile;
                 if (tile.type != TileType::Default){
-                    sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
+                    sf::Vector2f drawPos = {float(j * TileManager::tileSize.x), float(i * TileManager::tileSize.y)};
                     tile.sprite.setPosition(drawPos);
-                    window.draw(tile.sprite); 
+                    window.draw(tile.sprite);
+                    std::cout << "Tile is in X: " << j << " Y: " << i << std::endl; 
                 };
                 //Show if a cell has occupants 
                 if (CityObject::getDebug() && grid[i][j].occupants.size() > 0){
-                    sf::Vector2f drawPos = {(float)gridStart.x + j * TileManager::tileSize.x, (float)gridStart.y + i * TileManager::tileSize.y};
+                    sf::Vector2f drawPos = {float(j * TileManager::tileSize.x), float(i * TileManager::tileSize.y)};
                     sf::RectangleShape square(sf::Vector2f(AutoCity::TileManager::tileSize.x, AutoCity::TileManager::tileSize.y));
                     int amountOfRed = 128 + grid[i][j].occupants.size() * 10;
                     if (amountOfRed > 255){
@@ -120,8 +121,8 @@ namespace AutoCity {
         };
     };
     sf::Vector2u CityGridController::pixelToGridPos(sf::Vector2f pos){
-        unsigned int xPos = static_cast<unsigned int>(std::floor(pos.x / TileManager::tileSize.x));
-        unsigned int yPos = static_cast<unsigned int>(std::floor(pos.y / TileManager::tileSize.y));
+        unsigned int xPos = int(pos.x / TileManager::tileSize.x);
+        unsigned int yPos = int(pos.y / TileManager::tileSize.y);
         sf::Vector2u gridPos = {xPos, yPos};
         return gridPos;
     };
@@ -129,18 +130,17 @@ namespace AutoCity {
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
-        pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         grid[gridPos.y][gridPos.x].occupants.erase(agent);
     };
     void CityGridController::addAgent(Agent *agent, sf::Vector2u agentGridPos){
+        std::cout << "Agent in grid X: " << agentGridPos.x << " Y: " << agentGridPos.y << std::endl;
         grid[agentGridPos.y][agentGridPos.x].occupants.emplace(agent);
     };
     void CityGridController::agentUpdate(const Event& e){
         auto agentInfo = std::any_cast<std::pair<Agent*, sf::Vector2f>>(e.payload);
         Agent* agent = agentInfo.first;
         sf::Vector2f pos = agentInfo.second;
-        pos -= static_cast<sf::Vector2f>(gridStart);//remove gridstart so placed in the right cell
         sf::Vector2u gridPos = pixelToGridPos(pos);
         addAgent(agent, gridPos);
         if (!agent->getOffGrid()){
