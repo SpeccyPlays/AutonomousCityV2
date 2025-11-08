@@ -66,7 +66,7 @@ namespace AutoCity {
                 if (subType == TileSubType::Straight){
                     Tile newTile = baseTile;
                     //have to do this weird new sprite thing or might get some weirdness when displaying
-                    newTile.sprite = sf::Sprite(baseTile.sprite.getTexture(), baseTile.sprite.getTextureRect());
+                    newTile.sprite = sf::Sprite(baseTile.sprite.getTexture());
                     newTile.rotation = sf::degrees(0);
                     //do this so the origin is centre of the tile and not the top left
                     newTile.sprite.setOrigin(newTile.origin);
@@ -75,7 +75,7 @@ namespace AutoCity {
                     //now rotate it once
                     Tile newTile2 = baseTile;
                     //have to do this weird new sprite thing or might get some weirdness when displaying
-                    newTile2.sprite = sf::Sprite(baseTile.sprite.getTexture(), baseTile.sprite.getTextureRect());
+                    newTile2.sprite = sf::Sprite(baseTile.sprite.getTexture());
                     float angle = 90;
                     newTile2.rotation = sf::degrees(angle);
                     //do this so the origin is centre of the tile and not the top left
@@ -89,7 +89,7 @@ namespace AutoCity {
                         Tile rotated = baseTile;
                         rotated.rotation = sf::degrees(angle);
                         //have to do this weird new sprite thing or might get some weirdness when displaying
-                        rotated.sprite = sf::Sprite(baseTile.sprite.getTexture(), baseTile.sprite.getTextureRect());
+                        rotated.sprite = sf::Sprite(baseTile.sprite.getTexture());
                         //do this so the origin is centre of the tile and not the top left
                         rotated.sprite.setOrigin(rotated.origin);
                         rotated.sprite.setRotation(rotated.rotation);

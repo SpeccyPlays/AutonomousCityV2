@@ -76,6 +76,9 @@ namespace AutoCity {
                 Tile tile = grid[i][j].tile;
                 if (tile.type != TileType::Default){
                     sf::Vector2f drawPos = {float(j * TileManager::tileSize.x), float(i * TileManager::tileSize.y)};
+                    //origin will be center of tile so remove half tilesize
+                    sf::Vector2f backFromOrigin = {float(TileManager::tileSize.x / 2), float(TileManager::tileSize.y / 2)};
+                    drawPos += backFromOrigin;
                     tile.sprite.setPosition(drawPos);
                     window.draw(tile.sprite);
                 };
@@ -115,7 +118,6 @@ namespace AutoCity {
     void CityGridController::addTileToGrid(sf::Vector2f pos, Tile tile){
         sf::Vector2u gridPos = pixelToGridPos(pos);
         if (gridPos.y < grid.size() && gridPos.x < grid[gridPos.y].size()) {
-            tile.sprite.setOrigin({0, 0});
             grid[gridPos.y][gridPos.x].tile = tile;
         };
     };
