@@ -184,13 +184,13 @@ namespace AutoCity {
         float angleDiff = tileAngle - agentAngle;
         float allowedLeft = tileAngle - allowedDifference;//wrapAngle(tileAngle - allowedDifference);
         float allowedRight = tileAngle + allowedDifference;//wrapAngle(tileAngle + allowedDifference);
-        //std::cout << "Agent angle: " << agentAngle << " Angle diff: "<< angleDiff <<  " Allowed left angle: " << allowedLeft << " Allowed right: " << allowedRight << std::endl;
-        if (angleDiff < allowedLeft){
+        std::cout << "Agent angle: " << agentAngle << " Angle diff: "<< angleDiff <<  " Allowed left angle: " << allowedLeft << " Allowed right: " << allowedRight << std::endl;
+        if (agentAngle < allowedLeft){
             std::cout << "Agent steered left" << std::endl;
             agent->slowDown();
             agent->steerRight();
         }
-        if (angleDiff > allowedRight){
+        if (agentAngle > allowedRight){
             std::cout << "Agent steered right" << std::endl;
             agent->slowDown(); 
             agent->steerLeft();

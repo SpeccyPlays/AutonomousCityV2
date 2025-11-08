@@ -78,7 +78,6 @@ namespace AutoCity {
                     sf::Vector2f drawPos = {float(j * TileManager::tileSize.x), float(i * TileManager::tileSize.y)};
                     tile.sprite.setPosition(drawPos);
                     window.draw(tile.sprite);
-                    std::cout << "Tile is in X: " << j << " Y: " << i << std::endl; 
                 };
                 //Show if a cell has occupants 
                 if (CityObject::getDebug() && grid[i][j].occupants.size() > 0){
@@ -134,7 +133,6 @@ namespace AutoCity {
         grid[gridPos.y][gridPos.x].occupants.erase(agent);
     };
     void CityGridController::addAgent(Agent *agent, sf::Vector2u agentGridPos){
-        std::cout << "Agent in grid X: " << agentGridPos.x << " Y: " << agentGridPos.y << std::endl;
         grid[agentGridPos.y][agentGridPos.x].occupants.emplace(agent);
     };
     void CityGridController::agentUpdate(const Event& e){
