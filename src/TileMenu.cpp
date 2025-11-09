@@ -102,6 +102,12 @@ namespace AutoCity {
     };
     std::vector<sf::Angle> TileMenu::rotateFlowMap(std::vector<sf::Angle> map, int angle){
         std::vector<sf::Angle> newFlowMap = map;
+        //get the array in the right rotated order
+        int steps = (angle / 90) % 4;
+        for (int i = 0; i < steps; i++){
+            newFlowMap = {newFlowMap[3], newFlowMap[0], newFlowMap[1], newFlowMap[2]};
+        }
+        //then change the angles
         for (sf::Angle& flowAngle : newFlowMap){
             sf::Angle newAngle = flowAngle + sf::degrees(angle);
             float wrapped = fmod(newAngle.asDegrees(), 360.f); //Wrap into [0, 360)
