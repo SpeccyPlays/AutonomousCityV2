@@ -12,14 +12,11 @@ namespace AutoCity {
     };
     void Agent::init(){
         maxspeed = 1.5f;
-        wanderingDistance = 0.01f;
-        agentState = AgentState::Wandering;
         velocity = {0.f, 0.f};
         accelerationRate = 5.f;//random value but never mind
         decelerationRate = 0.95f;
         currentSpeed = 0.f;
         rngSeed = std::mt19937(std::random_device{}());
-        wanderDist = std::uniform_real_distribution<float>(-wanderingDistance, wanderingDistance);
         std::uniform_real_distribution<float> angleDist(0, 360);
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
@@ -85,18 +82,6 @@ namespace AutoCity {
         return angle;
     };
     void Agent::addSteering(float steeringAmount){
-        angle += steeringAmount;
-        wrapAngle();
-    };
-    void Agent::steerLeft(){
-        //copied from previous version
-        float steeringAmount = 5;
-        angle -= steeringAmount;
-        wrapAngle();
-    };
-    void Agent::steerRight(){
-        //copied from previous version
-        float steeringAmount = 5;
         angle += steeringAmount;
         wrapAngle();
     };

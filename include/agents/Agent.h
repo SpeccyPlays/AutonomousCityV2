@@ -21,12 +21,10 @@ namespace AutoCity {
             float currentSpeed;
             float accelerationRate;
             float decelerationRate;
-            float wanderingDistance;
             AgentState agentState;
             std::string texturePath;
             //used for random wandering
             std::mt19937 rngSeed;
-            std::uniform_real_distribution<float> wanderDist;
             std::uniform_real_distribution<float> randomAngle;
             bool offGrid;
         private:
@@ -47,8 +45,6 @@ namespace AutoCity {
             void setDesired();
             void setVelocity();
             void setCurrentPosToDesired();
-            void steerLeft();
-            void steerRight();
             void accelerate();
             void setOffGrid(bool isOffGrid);
             bool getOffGrid();
