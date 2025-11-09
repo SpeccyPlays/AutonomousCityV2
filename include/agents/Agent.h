@@ -52,5 +52,6 @@ namespace AutoCity {
             void accelerate();
             void setOffGrid(bool isOffGrid);
             bool getOffGrid();
+            void addSteering(float steeringAmount);
         };
 };

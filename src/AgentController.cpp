@@ -37,6 +37,8 @@ namespace AutoCity {
             //remove agent from current cell
             Event removeEvent = {EventType::RemoveAgent, std::pair{&agent, agent.getPos()}};
             bus.publish(removeEvent);
+            Event flowMapCheck = {EventType::AgentGetTile, std::pair{&agent, agent.getPos()}};
+            bus.publish(flowMapCheck);
             //set off grid to false by default
             agent.setOffGrid(false);
             //Check further ahead to see if agent heading offgrid
@@ -78,7 +80,6 @@ namespace AutoCity {
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
             agent->setOffGrid(true);
-            agent->slowDown();
             offGridHandler(agent, offGrid);
         }
     };
@@ -88,40 +89,43 @@ namespace AutoCity {
         //a negative x means agent going right to left, oppposite if positive
         //a negative y means agents going bottom to top, oppposite if positive
         sf::Vector2f velocity = agent->getVelocity();
+        float steeringAmount = 0.f;
+        float boundaryCorrection = 2.0f;
         if (offGrid[0] == true){
             if (velocity.x < 0){
-                agent->steerLeft();
+                steeringAmount = -boundaryCorrection;
             }
             else {
-                agent->steerRight();
+                steeringAmount = boundaryCorrection;
             };
         }
         else if (offGrid[2] == true){
             if (velocity.x < 0){
-                agent->steerRight();
+                steeringAmount = boundaryCorrection;
             }
             else {
-                agent->steerLeft();
-                
+                steeringAmount = -boundaryCorrection;
             };
         };
         //either off right or left, not both
         if (offGrid[1] == true){
             if (velocity.y < 0){
-                agent->steerLeft();
+                steeringAmount = -boundaryCorrection;
             }
             else {
-                agent->steerRight();
+                steeringAmount = boundaryCorrection;
             };
         }
         else if (offGrid[3] == true){
             if (velocity.y < 0){
-                agent->steerRight(); 
+                steeringAmount = boundaryCorrection; 
             }
             else {
-                agent->steerLeft();
+                steeringAmount = -boundaryCorrection;
             };
         };
+        agent->slowDown();
+        agent->addSteering(steeringAmount);
     };
     void AgentController::collisionHandler(const Event& e){
         //payload std::pair<Agent*, std::unordered_set<AutoCity::Agent *>
@@ -137,8 +141,8 @@ namespace AutoCity {
         //work out where we are in the tile
         sf::Vector2f agentNextPos = agent->getnextPos();
         if (tile.type == TileType::Default){
-            //agent->slowDown();
-            agent->steerRight();
+            agent->slowDown();
+            agent->addSteering(2.f);
         }
         else {
             float tileFlowAngle = getTileFlowAngle(tile, agentNextPos);
@@ -179,28 +183,36 @@ namespace AutoCity {
         return flowAngle;
     };
     void AgentController::tileAngleActions(Agent* agent, float tileAngle){
-        float allowedDifference = 10.f;
+        //chat gpt helped with this part
+        //I don't fully understand it
+        float allowedDifference = 5.f;
         float agentAngle = agent->getAngle();
-        float angleDiff = tileAngle - agentAngle;
-        float allowedLeft = wrapAngle(tileAngle - allowedDifference);
-        float allowedRight = wrapAngle(tileAngle + allowedDifference);
-        std::cout << "Agent angle: " << agentAngle << " Angle diff: "<< angleDiff <<  "Allowed left angle: " << allowedLeft << " Allowed right: " << allowedRight << std::endl;
-        if (agentAngle < allowedLeft){
-            std::cout << "Agent steered left" << std::endl;
-            //agent->slowDown();
-            agent->steerRight();
+        float angleDiff = wrapAngle(tileAngle - agentAngle);
+        float amountToSteer = 0;        
+        if (std::abs(angleDiff) < allowedDifference){
+            return;
+        }        
+        // Scale steering strength based on how far off we are (smooth turning)
+        float maxTurnRate = 3.0f; // how strongly the agent can turn per frame
+        float steerStrength = std::clamp(angleDiff / 90.f, -1.f, 1.f); 
+        float steeringAmount = steerStrength * maxTurnRate;
+
+        // Optional: slow down if badly misaligned
+        if (std::abs(angleDiff) > 45.f) {
+            agent->slowDown();
         }
-        if (agentAngle > allowedRight){
-            std::cout << "Agent steered right" << std::endl;
-            //agent->slowDown(); 
-            agent->steerLeft();
-        }
-    };
-    float AgentController::wrapAngle(float angle){
-        angle = std::fmod(angle, 360.0f); // get remainder after division by 360
-        if (angle < 0) {
-            angle += 360.0f; // ensure it's positive
+        std::cout << "Agent angle: " << agentAngle << " Tile flow angle: " << tileAngle << " Angle diff: "<< angleDiff << " Steering amount:" << steeringAmount << std::endl;
+        // Apply steering smoothly
+        agent->addSteering(steeringAmount);
         };
+    float AgentController::wrapAngle(float angle){
+        //wraps to be in -180 to 180 range
+        if (angle < -180) {
+            angle += 360.0f;
+        };
+        if (angle > 180){
+            angle -= 360.0f;
+        }
         return angle;
     };
 };

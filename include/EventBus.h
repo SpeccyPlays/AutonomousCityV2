@@ -22,6 +22,7 @@ namespace AutoCity {
         LookAheadResponse, //payload std::pair<Agent*, std::array>
         DesiredBoundaryCheckResponse, //payload std::pair<Agent*, std::array>
         AgentUpdate, //pay std::pair<Agent*, sf::Vector2f>
+        AgentGetTile, 
         AgentOffGrid, //payload std::pair<Agent*, std::array>
         AgentCollisionCheck, //payload std::pair<Agent*, sf::Vector2f>,
         AgentCollisionCheckResponse, //payload std::pair<Agent*, sf::Vector2fstd::unordered_set<AutoCity::Agent *>,

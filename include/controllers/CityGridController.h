@@ -39,6 +39,6 @@ namespace AutoCity {
             void agentLookAhead(const Event& e);
             void agentDesiredBoundaryCheck(const Event& e);
             void sendOccupants(const Event& e);
-            void sendTileForAgent(Agent *agent, sf::Vector2u agentGridPos);
+            void sendTileForAgent(const Event& e);
     };
 };

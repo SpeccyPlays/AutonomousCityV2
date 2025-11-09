@@ -88,7 +88,7 @@ namespace AutoCity {
             TileSubType::DeadEnd, 
             deadEndSprite,
             origin,
-            {east, east, south, north}, //flowmap
+            {east, south, south, north}, //flowmap
             sf::degrees(0)
         };
         tiles[TileType::Road].emplace(TileSubType::DeadEnd, deadEnd);
