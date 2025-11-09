@@ -197,8 +197,12 @@ namespace AutoCity {
         float steerStrength = std::clamp(angleDiff / 90.f, -1.f, 1.f); 
         float steeringAmount = steerStrength * maxTurnRate;
 
-        // Optional: slow down if badly misaligned
-        if (std::abs(angleDiff) > 45.f) {
+        //If we're off by over 120, probably on wrong side of the road so steer left
+        if (std::abs(angleDiff) >= 120.f){
+            steeringAmount = -1 * maxTurnRate;
+            agent->slowDown();
+        }
+        else if (std::abs(angleDiff) > 45.f) {
             agent->slowDown();
         }
         std::cout << "Agent angle: " << agentAngle << " Tile flow angle: " << tileAngle << " Angle diff: "<< angleDiff << " Steering amount:" << steeringAmount << std::endl;
