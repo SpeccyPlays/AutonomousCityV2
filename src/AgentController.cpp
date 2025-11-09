@@ -6,7 +6,7 @@
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 10; i++){
             std::unique_ptr<AutoCity::Agent> agent;
             agent = std::make_unique<AutoCity::Agent>(window, bus);
             agents.emplace_back(std::move(agent));
@@ -205,7 +205,6 @@ namespace AutoCity {
         else if (std::abs(angleDiff) > 45.f) {
             agent->slowDown();
         }
-        std::cout << "Agent angle: " << agentAngle << " Tile flow angle: " << tileAngle << " Angle diff: "<< angleDiff << " Steering amount:" << steeringAmount << std::endl;
         // Apply steering smoothly
         agent->addSteering(steeringAmount);
         };
