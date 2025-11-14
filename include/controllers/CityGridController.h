@@ -40,5 +40,6 @@ namespace AutoCity {
             void agentDesiredBoundaryCheck(const Event& e);
             void sendOccupants(const Event& e);
             void sendTileForAgent(const Event& e);
+            void saveGrid(const Event& e);
     };
 };

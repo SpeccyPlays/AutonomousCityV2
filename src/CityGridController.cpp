@@ -1,8 +1,12 @@
 #include "../include/controllers/CityGridController.h"
 #include "../include/agents/Agent.h"
+#include "../include/CityGrid/json.hpp"
 #include <iostream>
+#include <fstream>
 #include <math.h>
 #include <algorithm>
+
+using json = nlohmann::json;
 
 namespace AutoCity {
 
@@ -22,6 +26,7 @@ namespace AutoCity {
         this->toggleDebug(); //should switch debug on
         bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
+        bus.subscribe(AutoCity::EventType::Save, [this](const Event& e) { saveGrid(e); });
         bus.subscribe(AutoCity::EventType::RemoveAgent, [this](const Event& e) { removeAgent(e); });
         bus.subscribe(AutoCity::EventType::AgentGetTile, [this](const Event& e) { sendTileForAgent(e); });
         bus.subscribe(AutoCity::EventType::AgentLookAheadBoundaryCheck, [this](const Event& e) { agentLookAhead(e); });
@@ -197,5 +202,42 @@ namespace AutoCity {
         std::array<bool, 4> offGrid = isAgentOnGrid(agent, agentPos);
         Event event = {EventType::DesiredBoundaryCheckResponse, std::pair{agent, offGrid}};
         bus.publish(event);
+    };
+    void CityGridController::saveGrid(const Event& e){
+        json json;
+        json["gridwidth"] = gridSize.x;
+        json["gridheight"] = gridSize.y;
+        json["gridstartx"] = gridStart.x;
+        json["gridstarty"] = gridStart.y;
+        json["gridendx"] = gridEnd.x;
+        json["gridendy"] = gridEnd.y;
+
+        for (int i = 0; i < grid.size(); i++){
+            for (int j = 0; j < grid[i].size(); j++){
+                {
+                    const Tile &tile = grid[i][j].tile;
+                    json["cells"].push_back({
+                        {"x", j},
+                        {"y", i},
+                        {"type", static_cast<int>(tile.type)},
+                        {"subtype", static_cast<int>(tile.subType)},
+                        {"originx", tile.origin.x},
+                        {"originy", tile.origin.y},  
+                        {"rotation", tile.rotation.asDegrees()},
+                        {"flowmap0", tile.flowMap[0].asDegrees()},
+                        {"flowmap1", tile.flowMap[1].asDegrees()},
+                        {"flowmap2", tile.flowMap[2].asDegrees()},
+                        {"flowmap3", tile.flowMap[3].asDegrees()},
+                    });
+                }
+            }
+        };
+        std::ofstream file("test.json");
+        if (!file.is_open()){
+            std::cout << "Problem opening file" << std::endl;
+            return;
+        };
+        file << json.dump(2);
+       std::cout << "Problem opening file" << std::endl;
     };
 };
