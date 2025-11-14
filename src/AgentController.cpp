@@ -1,8 +1,12 @@
 #include "../include/controllers/AgentController.h"
+#include "../include/CityGrid/json.hpp"
 #include <iostream>
 #include <unordered_set>
 #include <array>
 #include <algorithm>
+#include <fstream>
+
+using json = nlohmann::json;
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
@@ -18,7 +22,8 @@ namespace AutoCity {
         bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { this->handleDesiredBoundryCheck(e); });
         bus.subscribe(AutoCity::EventType::AgentCollisionCheckResponse, [this](const Event& e) { this->collisionHandler(e); });
         bus.subscribe(AutoCity::EventType::AgentTile, [this](const Event& e) { this->tileHandler(e); });
-        
+        bus.subscribe(AutoCity::EventType::SaveAgents, [this](const Event& e) { this->saveAgents(e); });
+
         for (auto& agentPtr : agents){
             Agent& agent = *agentPtr;
             agent.init();
@@ -218,4 +223,17 @@ namespace AutoCity {
         }
         return angle;
     };
+    void AgentController::saveAgents(const Event& e){
+        const auto& payload = std::any_cast<std::pair<json, std::string>>(e.payload);
+        json json = payload.first;
+        std::string fileName = payload.second;
+
+        std::ofstream file(fileName);
+        if (!file.is_open()){
+            std::cout << "Problem opening file" << std::endl;
+            return;
+        };
+        file << json.dump(2);
+       std::cout << "Problem opening file" << std::endl;
+    }
 };

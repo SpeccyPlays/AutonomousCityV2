@@ -9,6 +9,7 @@ namespace AutoCity {
         New,
         Open,
         Save,
+        SaveAgents, //payload json
         SaveAs,
         Quit,
         DebugGrid,

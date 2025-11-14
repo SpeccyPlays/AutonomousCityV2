@@ -232,12 +232,8 @@ namespace AutoCity {
                 }
             }
         };
-        std::ofstream file("test.json");
-        if (!file.is_open()){
-            std::cout << "Problem opening file" << std::endl;
-            return;
-        };
-        file << json.dump(2);
-       std::cout << "Problem opening file" << std::endl;
+        std::string fileName = "test.json";
+        Event saveEvent = {EventType::SaveAgents, std::pair{json, fileName}};
+        bus.publish(saveEvent);
     };
 };
