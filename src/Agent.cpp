@@ -124,5 +124,11 @@ namespace AutoCity {
     };
     bool Agent::getOffGrid(){
         return offGrid;
-    }
+    };
+    Agent::AgentState Agent::getState(){
+        return agentState;
+    };
+    std::string Agent::getTexturePath(){
+        return texturePath;
+    };
 };

@@ -49,5 +49,7 @@ namespace AutoCity {
             void setOffGrid(bool isOffGrid);
             bool getOffGrid();
             void addSteering(float steeringAmount);
+            AgentState getState();
+            std::string getTexturePath();
         };
 };

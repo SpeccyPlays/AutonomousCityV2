@@ -227,6 +227,37 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<json, std::string>>(e.payload);
         json json = payload.first;
         std::string fileName = payload.second;
+        for (auto& agentPtr : agents){
+            Agent& agent = *agentPtr;
+            json["agents"].push_back({
+                {"currentposx", agent.getPos().x},
+                {"currentposy", agent.getPos().y},
+                {"acceleration", agent.getPos().x},
+                {"velocityx", agent.getVelocity().x},
+                {"velocityy", agent.getVelocity().y},
+                {"texturepath", agent.getTexturePath()},
+                {"state", static_cast<int>(agent.getState())},
+                {"angle", agent.getAngle()},
+
+            });
+        };
+        /*
+
+            
+            sf::Vector2f desiredPos;
+            sf::Vector2f lookAheadPos;
+            float currentDeltaTime;
+            float angle;
+            float maxspeed;
+            float currentSpeed;
+            float accelerationRate;
+            float decelerationRate;
+            AgentState agentState;
+            std::string texturePath;
+            //used for random wandering
+            std::mt19937 rngSeed;
+            std::uniform_real_distribution<float> randomAngle;
+            bool offGrid;*/
 
         std::ofstream file(fileName);
         if (!file.is_open()){
@@ -234,6 +265,6 @@ namespace AutoCity {
             return;
         };
         file << json.dump(2);
-       std::cout << "Problem opening file" << std::endl;
+        std::cout << "Saved file" << std::endl;
     }
 };
