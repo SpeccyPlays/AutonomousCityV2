@@ -30,7 +30,9 @@ namespace AutoCity {
         this->toggleDebug(); //should switch debug on
         bus.subscribe(AutoCity::EventType::TileAdded, [this](const Event& e) { addTile(e); });
         bus.subscribe(AutoCity::EventType::New, [this](const Event& e) { newGrid(e); });
-        bus.subscribe(AutoCity::EventType::Save, [this](const Event& e) { saveGrid(e); });
+        bus.subscribe(AutoCity::EventType::Save, [this](const Event& e) { save(e); });
+        bus.subscribe(AutoCity::EventType::SaveAs, [this](const Event& e) { saveAs(e); });
+        bus.subscribe(AutoCity::EventType::Open, [this](const Event& e) { loadGrid(e); });
         bus.subscribe(AutoCity::EventType::RemoveAgent, [this](const Event& e) { removeAgent(e); });
         bus.subscribe(AutoCity::EventType::AgentGetTile, [this](const Event& e) { sendTileForAgent(e); });
         bus.subscribe(AutoCity::EventType::AgentLookAheadBoundaryCheck, [this](const Event& e) { agentLookAhead(e); });
@@ -207,7 +209,23 @@ namespace AutoCity {
         Event event = {EventType::DesiredBoundaryCheckResponse, std::pair{agent, offGrid}};
         bus.publish(event);
     };
-    void CityGridController::saveGrid(const Event& e){
+    void CityGridController::save(const Event& e){
+        std::string fileName= "";
+        if (currentFileName != ""){
+            fileName = currentFileName;
+        }
+        else {
+            fileName = getTodayFileName();
+        }
+        saveGrid(fileName);
+    };
+    void CityGridController::saveAs(const Event& e){
+        const auto& payload = std::any_cast<std::string>(e.payload);
+        std::string fileName = payload;
+        currentFileName = fileName;
+        saveGrid(fileName);
+    };
+    void CityGridController::saveGrid(std::string fileName){
         json json;
         json["gridwidth"] = gridSize.x;
         json["gridheight"] = gridSize.y;
@@ -236,13 +254,6 @@ namespace AutoCity {
                 }
             }
         };
-        std::string fileName= "";
-        if (currentFileName != ""){
-            fileName = currentFileName;
-        }
-        else {
-            fileName = getTodayFileName();
-        }
         std::ostringstream oss;
         oss << "Autononmous City V2 - " << fileName;
         window.setTitle(oss.str());
@@ -257,5 +268,11 @@ namespace AutoCity {
         std::ostringstream oss;
         oss << std::put_time(&localTime, "%Y_%m_%d-%H_%M") << "_autocity.json ";
         return oss.str();
-    }
+    };
+    void CityGridController::loadGrid(const Event& e){
+        const auto& payload = std::any_cast<std::string>(e.payload);
+        std::string fileName = payload;
+        json json;
+        Event saveEvent = {EventType::AgentsLoad, json};
+    };
 };

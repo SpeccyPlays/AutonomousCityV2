@@ -17,12 +17,13 @@ namespace AutoCity {
         }
     };
     void AgentController::init(){
-        bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { this->toggleAllDebug(); });
-        bus.subscribe(AutoCity::EventType::LookAheadResponse, [this](const Event& e) { this->handleLookAheadBoundryCheck(e); });
-        bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { this->handleDesiredBoundryCheck(e); });
-        bus.subscribe(AutoCity::EventType::AgentCollisionCheckResponse, [this](const Event& e) { this->collisionHandler(e); });
-        bus.subscribe(AutoCity::EventType::AgentTile, [this](const Event& e) { this->tileHandler(e); });
-        bus.subscribe(AutoCity::EventType::SaveAgents, [this](const Event& e) { this->saveAgents(e); });
+        bus.subscribe(AutoCity::EventType::DebugAgents, [this](const Event& e) { toggleAllDebug(); });
+        bus.subscribe(AutoCity::EventType::LookAheadResponse, [this](const Event& e) { handleLookAheadBoundryCheck(e); });
+        bus.subscribe(AutoCity::EventType::DesiredBoundaryCheckResponse, [this](const Event& e) { handleDesiredBoundryCheck(e); });
+        bus.subscribe(AutoCity::EventType::AgentCollisionCheckResponse, [this](const Event& e) { collisionHandler(e); });
+        bus.subscribe(AutoCity::EventType::AgentTile, [this](const Event& e) { tileHandler(e); });
+        bus.subscribe(AutoCity::EventType::SaveAgents, [this](const Event& e) { saveAgents(e); });
+        bus.subscribe(AutoCity::EventType::AgentsLoad, [this](const Event& e) { loadAgents(e); });
 
         for (auto& agentPtr : agents){
             Agent& agent = *agentPtr;
@@ -266,5 +267,9 @@ namespace AutoCity {
         };
         file << json.dump(2);
         std::cout << "Saved file" << std::endl;
-    }
+    };
+    void AgentController::loadAgents(const Event& e){
+        const auto& payload = std::any_cast<json>(e.payload);
+        json json = payload;
+    };
 };

@@ -19,6 +19,7 @@ namespace AutoCity {
             void tileAngleActions(Agent* agent, float tileAngle);
             float wrapAngle(float angle);
             void saveAgents(const Event& e);
+            void loadAgents(const Event& e);
         public:
             AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;

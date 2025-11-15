@@ -7,9 +7,9 @@
 namespace AutoCity {
     enum class EventType {
         New,
-        Open,
+        Open, // payload std::string (filename)
         Save,
-        SaveAgents, //payload json
+        SaveAgents, //payload std::pair<json, std::string>
         SaveAs,
         Quit,
         DebugGrid,
@@ -28,6 +28,7 @@ namespace AutoCity {
         AgentCollisionCheck, //payload std::pair<Agent*, sf::Vector2f>,
         AgentCollisionCheckResponse, //payload std::pair<Agent*, sf::Vector2fstd::unordered_set<AutoCity::Agent *>,
         AgentTile, //pay std::pair<Agent*, tile
+        AgentsLoad, //payload <json>
         Error
     };
     struct Event {

@@ -37,13 +37,17 @@ namespace AutoCity {
             bus.publish(EventType::New);
         };
         if (ImGui::MenuItem("Open", "Ctrl+O")) {
-
+            std::string fileName = "";
+            Event openEvent = {EventType::Open, fileName};
+            bus.publish(openEvent);
         };
         if (ImGui::MenuItem("Save", "Ctrl+S")) {
             bus.publish(EventType::Save);
         };
         if (ImGui::MenuItem("Save As..")) {
-            bus.publish(EventType::SaveAs);
+            std::string fileName = "";
+            Event saveAsEvent = {EventType::SaveAs, fileName};
+            bus.publish(saveAsEvent);
         };
         ImGui::Separator();
         if (ImGui::MenuItem("Quit", "Alt+F4")) {

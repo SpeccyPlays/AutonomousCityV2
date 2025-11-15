@@ -51,5 +51,11 @@ namespace AutoCity {
             void addSteering(float steeringAmount);
             AgentState getState();
             std::string getTexturePath();
+            //used for loading only
+            void setCurrentPos(sf::Vector2f pos);
+            void setVelocity(sf::Vector2f newVelocity);
+            void setTexturePath(std::string path);
+            void setAngle(float newAngle);
+            void setAcceleration(float newSpeed);
         };
 };
