@@ -5,6 +5,10 @@
 #include <fstream>
 #include <math.h>
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 using json = nlohmann::json;
 
@@ -232,8 +236,26 @@ namespace AutoCity {
                 }
             }
         };
-        std::string fileName = "test.json";
+        std::string fileName= "";
+        if (currentFileName != ""){
+            fileName = currentFileName;
+        }
+        else {
+            fileName = getTodayFileName();
+        }
+        std::ostringstream oss;
+        oss << "Autononmous City V2 - " << fileName;
+        window.setTitle(oss.str());
         Event saveEvent = {EventType::SaveAgents, std::pair{json, fileName}};
         bus.publish(saveEvent);
     };
+    std::string CityGridController::getTodayFileName(){
+        auto now = std::chrono::system_clock::now();
+        std::time_t t = std::chrono::system_clock::to_time_t(now);
+        std::tm localTime = *std::localtime(&t);
+        //use this for standard file naming when clicking save
+        std::ostringstream oss;
+        oss << std::put_time(&localTime, "%Y_%m_%d-%H_%M") << "_autocity.json ";
+        return oss.str();
+    }
 };

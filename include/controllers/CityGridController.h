@@ -20,6 +20,7 @@ namespace AutoCity {
             void draw() override;
             
         private:
+            std::string currentFileName;
             sf::Vector2i gridStart;
             sf::Vector2i gridEnd;
             sf::Vector2u gridSize;
@@ -41,5 +42,6 @@ namespace AutoCity {
             void sendOccupants(const Event& e);
             void sendTileForAgent(const Event& e);
             void saveGrid(const Event& e);
+            std::string getTodayFileName();
     };
 };
