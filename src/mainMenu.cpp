@@ -37,17 +37,13 @@ namespace AutoCity {
             bus.publish(EventType::New);
         };
         if (ImGui::MenuItem("Open", "Ctrl+O")) {
-            std::string fileName = "";
-            Event openEvent = {EventType::Open, fileName};
-            bus.publish(openEvent);
+            fileOpenHandler();
         };
         if (ImGui::MenuItem("Save", "Ctrl+S")) {
             bus.publish(EventType::Save);
         };
         if (ImGui::MenuItem("Save As..")) {
-            std::string fileName = "";
-            Event saveAsEvent = {EventType::SaveAs, fileName};
-            bus.publish(saveAsEvent);
+            fileSaveAsHandler();
         };
         ImGui::Separator();
         if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -63,4 +59,50 @@ namespace AutoCity {
             bus.publish(EventType::DebugAgents);
         };
     };
+    void MainMenu::fileOpenHandler(){
+        NFD_Init();
+        nfdu8char_t *outPath;
+        nfdu8filteritem_t filters[1] = { {"AutoCity file", "json"}};
+        nfdopendialogu8args_t args = {0};
+        args.filterList = filters;
+        args.filterCount = 1;
+        nfdresult_t result = NFD_OpenDialogU8_With(&outPath, &args);
+        if (result == NFD_OKAY){
+            std::string fileName = outPath;
+            NFD_FreePathU8(outPath);
+            Event openEvent = {EventType::Open, fileName};
+            bus.publish(openEvent);
+        } 
+        else if (result == NFD_CANCEL){
+            puts("User pressed cancel.");
+        } 
+        else{
+            printf("Error: %s\n", NFD_GetError());
+        }
+        NFD_Quit();
+    };
+    void MainMenu::fileSaveAsHandler(){
+        NFD_Init();
+
+        nfdchar_t* savePath;
+        nfdfilteritem_t filterItem[1] = {{"AutoCity file", "json"}};
+
+        // show the dialog
+        nfdresult_t result = NFD_SaveDialog(&savePath, filterItem, 1, NULL, "Untitled.json");
+        if (result == NFD_OKAY) {
+            std::string fileName = savePath;
+            Event saveAsEvent = {EventType::SaveAs, fileName};
+            bus.publish(saveAsEvent);
+            // remember to free the memory (since NFD_OKAY is returned)
+            NFD_FreePath(savePath);
+        } 
+        else if (result == NFD_CANCEL) {
+            puts("User pressed cancel.");
+        } 
+        else {
+            printf("Error: %s\n", NFD_GetError());
+        }
+        // Quit NFD
+        NFD_Quit();
+    }
 };
