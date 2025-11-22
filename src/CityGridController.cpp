@@ -273,6 +273,37 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::string>(e.payload);
         std::string fileName = payload;
         json json;
-        Event saveEvent = {EventType::AgentsLoad, json};
+        std::ifstream file(fileName);
+        if (!file.is_open()){
+            std::cout << "Error opening: " << fileName << std::endl;
+            return;
+        };
+        file >> json;
+        gridSize.x = json["gridwidth"];
+        gridSize.y = json["gridheight"];
+        gridStart.x = json["gridstartx"];
+        gridStart.y = json["gridstarty"];
+        gridEnd.x = json["gridendx"];
+        gridEnd.y = json["gridendy"];
+        for (const auto &entry : json["cells"]){
+            Tile tile = TileManager::getTile(static_cast<TileType>(entry["type"]), static_cast<TileSubType>(entry["subtype"])); 
+            tile.origin.x = entry["originx"];
+            tile.origin.y = entry["originy"];
+            tile.rotation = sf::Angle(sf::degrees(entry["rotation"]));
+            tile.flowMap[0] = sf::Angle(sf::degrees(entry["flowmap0"]));
+            tile.flowMap[1] = sf::Angle(sf::degrees(entry["flowmap1"]));
+            tile.flowMap[2] = sf::Angle(sf::degrees(entry["flowmap2"]));
+            tile.flowMap[3] = sf::Angle(sf::degrees(entry["flowmap3"]));
+
+            tile.sprite.setOrigin(tile.origin);
+            tile.sprite.setRotation(tile.rotation);
+
+            Cell cell{tile};
+            int x = entry["x"];
+            int y = entry["y"];
+            grid[y][x] = cell;
+        }
+        Event agentsLoadEvent = {EventType::AgentsLoad, json};
+        bus.publish(agentsLoadEvent);
     };
 };
