@@ -131,6 +131,9 @@ namespace AutoCity {
     std::string Agent::getTexturePath(){
         return texturePath;
     };
+    float Agent::getSpeed(){
+        return currentSpeed;
+    }
     //used for loading only
     void Agent::setCurrentPos(sf::Vector2f pos){
         currentPos = pos;
@@ -144,7 +147,7 @@ namespace AutoCity {
     void Agent::setAngle(float newAngle){
         angle = newAngle;
     };
-    void Agent::setAcceleration(float newSpeed){
+    void Agent::setSpeed(float newSpeed){
         currentSpeed = newSpeed;
     };
 };

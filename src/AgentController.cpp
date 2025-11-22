@@ -233,7 +233,7 @@ namespace AutoCity {
             json["agents"].push_back({
                 {"currentposx", agent.getPos().x},
                 {"currentposy", agent.getPos().y},
-                {"acceleration", agent.getPos().x},
+                {"speed", agent.getSpeed()},
                 {"velocityx", agent.getVelocity().x},
                 {"velocityy", agent.getVelocity().y},
                 {"texturepath", agent.getTexturePath()},
@@ -271,5 +271,20 @@ namespace AutoCity {
     void AgentController::loadAgents(const Event& e){
         const auto& payload = std::any_cast<json>(e.payload);
         json json = payload;
+        agents.erase(agents.begin(), agents.end());
+        for (const auto &entry : json["agents"]){
+            std::unique_ptr<AutoCity::Agent> agent;
+            agent = std::make_unique<AutoCity::Agent>(window, bus);
+            agent->init();//will set all values we haven't saved
+            //then overwrite with saved
+            sf::Vector2f currentPos = {entry["currentposx"], entry["currentposy"]};
+            agent->setCurrentPos(currentPos);
+            sf::Vector2f velocity = {entry["velocityx"], entry["velocityy"]};
+            agent->setVelocity(velocity);
+            agent->setSpeed(entry["speed"]);
+            agent->setAngle(entry["angle"]);
+            agent->setTexturePath(entry["texturepath"]);
+            agents.emplace_back(std::move(agent));
+        }
     };
 };

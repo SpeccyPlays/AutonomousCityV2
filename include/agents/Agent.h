@@ -40,6 +40,7 @@ namespace AutoCity {
             sf::Vector2f getDesiredPos(sf::Time delta);
             sf::Vector2f getnextPos();
             sf::Vector2f getVelocity();
+            float getSpeed();
             float getAngle();
             void slowDown();
             void setDesired();
@@ -56,6 +57,6 @@ namespace AutoCity {
             void setVelocity(sf::Vector2f newVelocity);
             void setTexturePath(std::string path);
             void setAngle(float newAngle);
-            void setAcceleration(float newSpeed);
+            void setSpeed(float newSpeed);
         };
 };
