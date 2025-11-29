@@ -74,6 +74,7 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
+        agent->perceptionData.boundaryOffGrid = offGrid;
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
             offGridHandler(agent, offGrid);
@@ -83,6 +84,7 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::array<bool, 4>>>(e.payload);
         Agent* agent = payload.first;
         const std::array<bool, 4>& offGrid = payload.second;
+        agent->perceptionData.desiredOffGrid = offGrid;
         int offCount = std::count(offGrid.begin(), offGrid.end(), true);
         if (offCount > 0){
             agent->setOffGrid(true);
@@ -138,20 +140,26 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::unordered_set<AutoCity::Agent*>>>(e.payload);
         Agent* agent = payload.first;
         const std::unordered_set<AutoCity::Agent*>& occupants = payload.second;
+        agent->perceptionData.occupants = occupants;
     };
     void AgentController::tileHandler(const Event& e){
         //payload std::pair<Agent*, std::vector<sf::Angle>
         const auto& payload = std::any_cast<std::pair<Agent*, Tile>>(e.payload);
         Agent* agent = payload.first;
         Tile tile = payload.second;
+        agent->perceptionData.tileType = tile.type;
+        agent->perceptionData.tileSubType = tile.subType;
         //work out where we are in the tile
         sf::Vector2f agentNextPos = agent->getnextPos();
+        agent->perceptionData.tileFlowAngle = getTileFlowAngle(tile, agentNextPos);
+        
         if (tile.type == TileType::Default){
             agent->slowDown();
             agent->addSteering(2.f);
         }
         else {
             float tileFlowAngle = getTileFlowAngle(tile, agentNextPos);
+            agent->perceptionData.tileFlowAngle = tileFlowAngle;
             tileAngleActions(agent, tileFlowAngle);
         };   
     };

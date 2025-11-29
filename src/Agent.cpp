@@ -99,6 +99,13 @@ namespace AutoCity {
             currentSpeed = 0.2f;
         }
     };
+    void Agent::slowDownBy(float reductionMulipier){
+        currentSpeed *= reductionMulipier;
+        //stops agents getting completely stuck
+        if (currentSpeed < 0.2f){
+            currentSpeed = 0.2f;
+        }
+    };
     void Agent::setVelocity(){
         //copied from previous version
         double radians = angle * M_PI / 180.0;

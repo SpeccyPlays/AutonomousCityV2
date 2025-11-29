@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../include/objects/CityObject.h"
+#include "../CityGrid/Tile.h"
 #include <random>
+#include <unordered_set>
 
 namespace AutoCity {
     class Agent : public CityObject{
@@ -30,6 +32,15 @@ namespace AutoCity {
         private:
             void wrapAngle();
         public:
+            struct PerceptionData {
+                std::array<bool, 4> boundaryOffGrid;
+                std::array<bool, 4> desiredOffGrid;
+                TileType tileType;
+                TileSubType tileSubType;
+                float tileFlowAngle;
+                std::unordered_set<AutoCity::Agent*> occupants;
+            };
+            PerceptionData perceptionData;
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;
             void processEvents(const sf::Event& event) override;
@@ -43,6 +54,7 @@ namespace AutoCity {
             float getSpeed();
             float getAngle();
             void slowDown();
+            void slowDownBy(float reductionMulipier);
             void setDesired();
             void setVelocity();
             void setCurrentPosToDesired();
