@@ -56,7 +56,9 @@ namespace AutoCity {
             if (!agent.getOffGrid()){
                 Event collisionCheckEvent = {EventType::AgentCollisionCheck, std::pair{&agent, agent.getPos()}};
                 bus.publish(collisionCheckEvent);
-            };            
+            };
+            Behaviour::Behaviours behaviours = agent.behaviour->decideActions(agent.perceptionData);
+            agent.action(behaviours);
             agent.setVelocity();
             agent.setDesired();
             Event upDateEvent = {EventType::AgentUpdate, std::pair{&agent, agent.getnextPos()}};

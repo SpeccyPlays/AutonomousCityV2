@@ -3,6 +3,7 @@
 #include "../objects/CityObject.h"
 #include "../include/agents/Agent.h"
 #include "../include/CityGrid/TileManager.h"
+#include "../include/agents/Behaviour.h"
 
 namespace AutoCity {
     class AgentController : public CityObject{

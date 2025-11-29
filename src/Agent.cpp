@@ -161,4 +161,7 @@ namespace AutoCity {
     void Agent::setSpeed(float newSpeed){
         currentSpeed = newSpeed;
     };
+    void Agent::action(Behaviour::Behaviours behaviours){
+        
+    };
 };

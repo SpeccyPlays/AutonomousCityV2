@@ -32,10 +32,10 @@ namespace AutoCity {
             std::uniform_real_distribution<float> randomAngle;
             bool offGrid;
         private:
-            std::unique_ptr<Behaviour> behaviour;
             void wrapAngle();
         public:
             PerceptionData perceptionData;
+            std::unique_ptr<Behaviour> behaviour;
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;
             void processEvents(const sf::Event& event) override;
@@ -66,5 +66,6 @@ namespace AutoCity {
             void setTexturePath(std::string path);
             void setAngle(float newAngle);
             void setSpeed(float newSpeed);
+            void action(Behaviour::Behaviours behaviours);
         };
 };
