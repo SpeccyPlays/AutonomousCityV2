@@ -2,6 +2,8 @@
 
 #include "../include/objects/CityObject.h"
 #include "../CityGrid/Tile.h"
+#include "../include/agents/Behaviour.h"
+#include "../include/agents/PerceptionData.h"
 #include <random>
 #include <unordered_set>
 
@@ -30,16 +32,9 @@ namespace AutoCity {
             std::uniform_real_distribution<float> randomAngle;
             bool offGrid;
         private:
+            std::unique_ptr<Behaviour> behaviour;
             void wrapAngle();
         public:
-            struct PerceptionData {
-                std::array<bool, 4> boundaryOffGrid;
-                std::array<bool, 4> desiredOffGrid;
-                TileType tileType;
-                TileSubType tileSubType;
-                float tileFlowAngle;
-                std::unordered_set<AutoCity::Agent*> occupants;
-            };
             PerceptionData perceptionData;
             Agent(sf::RenderWindow& window, AutoCity::EventBus& bus);
             void init() override;
@@ -59,6 +54,7 @@ namespace AutoCity {
             void setVelocity();
             void setCurrentPosToDesired();
             void accelerate();
+            void addAcceleration(float accelerationAmount);
             void setOffGrid(bool isOffGrid);
             bool getOffGrid();
             void addSteering(float steeringAmount);

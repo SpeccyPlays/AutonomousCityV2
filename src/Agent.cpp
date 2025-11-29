@@ -21,6 +21,7 @@ namespace AutoCity {
         angle = angleDist(rngSeed);
         texturePath = "include/textures/car.png";
         offGrid = false;
+        behaviour = std::make_unique<NormalDriver>();
     };
     void Agent::processEvents(const sf::Event& event){
 
@@ -91,6 +92,9 @@ namespace AutoCity {
         if (currentSpeed > maxspeed){
             currentSpeed = maxspeed;
         };
+    };
+    void Agent::addAcceleration(float accelerationAmount){
+        currentSpeed += accelerationAmount * currentDeltaTime;
     };
     void Agent::slowDown(){
         //copied from previous version
