@@ -13,12 +13,20 @@ namespace AutoCity {
                 float brakingMultiplier;
                 float accelerationAmount;
             };
+            struct Sectors {
+                bool left;
+                bool right;
+                bool frontLeft;
+                bool frontCenter;
+                bool frontRight;
+            };
             virtual Behaviours decideActions(const PerceptionData& perceptionData) = 0;
             bool offGridCheck(const  std::array<bool, 4>& offGrid);
             void offGridHandler(Behaviours* behaviour, const std::array<bool, 4>& offGrid, sf::Vector2f velocity);
             bool isNotRoadTile(const PerceptionData& perceptionData);
             bool isNotAlone(const PerceptionData& perceptionData);
             void tileActions(Behaviours* behaviour, const PerceptionData& perceptionData);
+            Sectors checkAroundAgent(const PerceptionData& perceptionData);
             float wrapAngle(float angle);
             virtual ~Behaviour() = default;
     };

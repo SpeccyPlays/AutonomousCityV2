@@ -14,11 +14,14 @@ namespace AutoCity {
                 Standard,
                 Wandering
             };
+            std::string texturePath;
+            sf::Texture &tex;
             sf::Vector2f currentPos;
             sf::Vector2f velocity;
             sf::Vector2f acceleration;
             sf::Vector2f desiredPos;
             sf::Vector2f lookAheadPos;
+            sf::Vector2f textureSize;
             float currentDeltaTime;
             float angle;
             float maxspeed;
@@ -26,7 +29,6 @@ namespace AutoCity {
             float accelerationRate;
             float decelerationRate;
             AgentState agentState;
-            std::string texturePath;
             //used for random wandering
             std::mt19937 rngSeed;
             std::uniform_real_distribution<float> randomAngle;

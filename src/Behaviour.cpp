@@ -1,5 +1,6 @@
 #include "../include/agents/Behaviour.h"
 #include <algorithm>
+#include <math.h>
 
 namespace AutoCity {
     bool Behaviour::offGridCheck(const std::array<bool, 4>& offGrid){
@@ -94,11 +95,21 @@ namespace AutoCity {
         behaviour->steeringAmount = steeringAmount;
     };
     bool Behaviour::isNotAlone(const PerceptionData &perceptionData){
-        if (perceptionData.occupants.size() > 1){
+        if (perceptionData.occupantPositions.size() > 1){
             return true;
         }
         return false;
-    }
+    };
+    Behaviour::Sectors Behaviour::checkAroundAgent(const PerceptionData& perceptionData){
+        Sectors sectors = {};
+        sf::Vector2f currentPos = perceptionData.currentPos;
+        float currentAngle = perceptionData.agentAngle;
+        for (auto occupantPos : perceptionData.occupantPositions){
+            sf::Vector2f diff = occupantPos - currentPos;
+            float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+        };
+        return sectors;
+    };
     Behaviour::Behaviours NormalDriver::decideActions(const PerceptionData &perceptionData){
         Behaviours actions{};
         if (offGridCheck(perceptionData.boundaryOffGrid)){

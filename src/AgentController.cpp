@@ -83,7 +83,14 @@ namespace AutoCity {
         const auto& payload = std::any_cast<std::pair<Agent*, std::unordered_set<AutoCity::Agent*>>>(e.payload);
         Agent* agent = payload.first;
         const std::unordered_set<AutoCity::Agent*>& occupants = payload.second;
-        agent->perceptionData.occupants = occupants;
+        //agent->perceptionData.occupants = occupants;
+        if (occupants.size() > 1){
+            for (auto* occupant : occupants){
+                if (agent != occupant){
+                    agent->perceptionData.occupantPositions.push_back(occupant->getPos());
+                }
+            };
+        }
     };
     void AgentController::tileHandler(const Event& e){
         //payload std::pair<Agent*, std::vector<sf::Angle>

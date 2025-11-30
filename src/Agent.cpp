@@ -5,10 +5,11 @@
 #define M_PI 3.14159265358979323846  /* pi */
 
 namespace AutoCity {
-    Agent::Agent(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
+    Agent::Agent(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus), texturePath("include/textures/car.png"), tex(AutoCity::TextureManager::getTexture(texturePath)){
         sf::Vector2f windowSize = static_cast<sf::Vector2f>(window.getSize());
         currentPos.x = windowSize.x / 2;
         currentPos.y = windowSize.y / 2;
+        textureSize = static_cast<sf::Vector2f>(tex.getSize());
     };
     void Agent::init(){
         maxspeed = 1.5f;
@@ -19,7 +20,6 @@ namespace AutoCity {
         rngSeed = std::mt19937(std::random_device{}());
         std::uniform_real_distribution<float> angleDist(0, 360);
         angle = angleDist(rngSeed);
-        texturePath = "include/textures/car.png";
         offGrid = false;
         behaviour = std::make_unique<NormalDriver>();
     };
@@ -29,12 +29,12 @@ namespace AutoCity {
     void Agent::update(sf::Time delta){
         currentDeltaTime = delta.asSeconds();
         perceptionData.velocity = velocity;
+        perceptionData.currentPos = currentPos;
+        perceptionData.currentSpeed = currentSpeed;
     };
     void Agent::draw(){
-        sf::Texture &tex = AutoCity::TextureManager::getTexture(texturePath);
         sf::Sprite sprite(tex);
-        sf::Vector2f texSize = static_cast<sf::Vector2f>(tex.getSize());
-        sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f});
+        sprite.setOrigin({textureSize.x / 2.f, textureSize.y / 2.f});
         sprite.setPosition(currentPos);
         sprite.setRotation(sf::degrees(angle));
         window.draw(sprite);
