@@ -93,6 +93,12 @@ namespace AutoCity {
         behaviour->steering = true;
         behaviour->steeringAmount = steeringAmount;
     };
+    bool Behaviour::isNotAlone(const PerceptionData &perceptionData){
+        if (perceptionData.occupants.size() > 1){
+            return true;
+        }
+        return false;
+    }
     Behaviour::Behaviours NormalDriver::decideActions(const PerceptionData &perceptionData){
         Behaviours actions{};
         if (offGridCheck(perceptionData.boundaryOffGrid)){
@@ -111,6 +117,9 @@ namespace AutoCity {
             actions.steering = true;
             actions.steeringAmount = 2.f;
             return actions;
+        }
+        if (isNotAlone(perceptionData)){
+            
         }
         tileActions(&actions, perceptionData);
         actions.accelerate = true;
