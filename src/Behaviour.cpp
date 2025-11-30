@@ -87,7 +87,7 @@ namespace AutoCity {
         }
         else if (std::abs(angleDiff) > 45.f) {
             behaviour->braking = true;
-            behaviour->braking = 0.95f;
+            behaviour->brakingMultiplier = 0.95f;
         }
         // Apply steering smoothly
         behaviour->steering = true;
