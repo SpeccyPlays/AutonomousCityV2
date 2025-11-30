@@ -10,7 +10,7 @@ using json = nlohmann::json;
 
 namespace AutoCity {
     AgentController::AgentController(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus){
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 20; i++){
             std::unique_ptr<AutoCity::Agent> agent;
             agent = std::make_unique<AutoCity::Agent>(window, bus);
             agents.emplace_back(std::move(agent));

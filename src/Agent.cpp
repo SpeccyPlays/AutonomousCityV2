@@ -1,15 +1,14 @@
+#define _USE_MATH_DEFINES
 #include "../include/agents/Agent.h"
 #include "../include/textures/TextureManager.h"
 #include <iostream>
 #include <cmath>
-#define M_PI 3.14159265358979323846  /* pi */
 
 namespace AutoCity {
     Agent::Agent(sf::RenderWindow& window, AutoCity::EventBus& bus) : CityObject(window, bus), texturePath("include/textures/car.png"), tex(AutoCity::TextureManager::getTexture(texturePath)){
         sf::Vector2f windowSize = static_cast<sf::Vector2f>(window.getSize());
         currentPos.x = windowSize.x / 2;
-        currentPos.y = windowSize.y / 2;
-        textureSize = static_cast<sf::Vector2f>(tex.getSize());
+        currentPos.y = windowSize.y / 2;  
     };
     void Agent::init(){
         maxspeed = 1.5f;
@@ -22,6 +21,7 @@ namespace AutoCity {
         angle = angleDist(rngSeed);
         offGrid = false;
         behaviour = std::make_unique<NormalDriver>();
+        textureSize = static_cast<sf::Vector2f>(tex.getSize());
     };
     void Agent::processEvents(const sf::Event& event){
 
@@ -31,6 +31,8 @@ namespace AutoCity {
         perceptionData.velocity = velocity;
         perceptionData.currentPos = currentPos;
         perceptionData.currentSpeed = currentSpeed;
+        perceptionData.textureSize = textureSize;
+        perceptionData.occupantPositions.clear();
     };
     void Agent::draw(){
         sf::Sprite sprite(tex);
@@ -39,11 +41,15 @@ namespace AutoCity {
         sprite.setRotation(sf::degrees(angle));
         window.draw(sprite);
         if (CityObject::getDebug()){
-            std::array line = {
-                sf::Vertex{currentPos},
-                sf::Vertex{lookAheadPos}
-            };
-            window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+            if (perceptionData.occupantPositions.size() > 0){
+                for (auto pos : perceptionData.occupantPositions){
+                    std::array line = {
+                        sf::Vertex{currentPos},
+                        sf::Vertex{pos}
+                    };
+                    window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+                }
+            }
         };        
     };
     sf::Vector2f Agent::getPos(){
