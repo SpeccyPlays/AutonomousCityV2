@@ -14,6 +14,11 @@ namespace AutoCity {
                 float accelerationAmount;
             };
             virtual Behaviours decideActions(const PerceptionData& perceptionData) = 0;
+            bool offGridCheck(const  std::array<bool, 4>& offGrid);
+            void offGridHandler(Behaviours* behaviour, const std::array<bool, 4>& offGrid, sf::Vector2f velocity);
+            bool isNotRoadTile(const PerceptionData& perceptionData);
+            void tileActions(Behaviours* behaviour, const PerceptionData& perceptionData);
+            float wrapAngle(float angle);
             virtual ~Behaviour() = default;
     };
     class NormalDriver : public Behaviour {

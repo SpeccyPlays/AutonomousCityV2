@@ -28,9 +28,10 @@ namespace AutoCity {
     };
     void Agent::update(sf::Time delta){
         currentDeltaTime = delta.asSeconds();
+        perceptionData.velocity = velocity;
     };
     void Agent::draw(){
-        sf::Texture tex = AutoCity::TextureManager::getTexture(texturePath);
+        sf::Texture &tex = AutoCity::TextureManager::getTexture(texturePath);
         sf::Sprite sprite(tex);
         sf::Vector2f texSize = static_cast<sf::Vector2f>(tex.getSize());
         sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f});
@@ -161,7 +162,20 @@ namespace AutoCity {
     void Agent::setSpeed(float newSpeed){
         currentSpeed = newSpeed;
     };
+    Behaviour::Behaviours Agent::decideActions(const PerceptionData &perceptionData){
+        return behaviour->decideActions(perceptionData);
+    };
     void Agent::action(Behaviour::Behaviours behaviours){
-        
+        if (behaviours.braking){
+            slowDownBy(behaviours.brakingMultiplier);
+        };
+        if (behaviours.accelerate){
+            addAcceleration(behaviours.accelerationAmount);
+        };
+        if (behaviours.steering){
+            addSteering(behaviours.steeringAmount);
+        };
+        setVelocity();
+        setDesired();
     };
 };

@@ -66,6 +66,7 @@ namespace AutoCity {
             void setTexturePath(std::string path);
             void setAngle(float newAngle);
             void setSpeed(float newSpeed);
+            Behaviour::Behaviours decideActions(const PerceptionData &perceptionData);
             void action(Behaviour::Behaviours behaviours);
         };
 };
